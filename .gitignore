@@ -1,0 +1,13 @@
+*
+
+!.gitignore
+!index.html
+!jsconfig.json
+!package.json
+!package-lock.json
+!README.md
+!vite.config.js
+!public
+!public/**
+!src
+!src/**
