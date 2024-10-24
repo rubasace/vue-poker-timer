@@ -21,7 +21,7 @@ steps:
       tags: 1.0.0.${CI_BUILD_NUMBER}
     when:
       branch:
-        - master
+        - main
         - release/*
 
 trigger:
