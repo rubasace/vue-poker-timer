@@ -35,10 +35,10 @@
                    @unregisterPlayer="unRegisterPlayer"
                    @addReentry="addReentry"
                    @removeReentry="removeReentry"
-                   @addAddon="addons++"
-                   @removeAddon="addons--"
-                   @eliminatePlayer="remainingPlayers--"
-                   @undoElimination="remainingPlayers++"
+                   @addAddon="addAddon"
+                   @removeAddon="removeAddon"
+                   @eliminatePlayer="eliminatePlayer"
+                   @undoElimination="undoElimination"
     />
   </Dialog>
   <span class="settings" @click="showDialog = true">Settings</span>
@@ -50,11 +50,10 @@ import Clock from "@/components/Clock.vue";
 import {nextTick} from "vue";
 import TitleValue from "@/components/TitleValue.vue";
 import Dialog from "@/components/Dialog.vue";
-import ConfigLine from "@/components/ConfigLine.vue";
 import Configuration from "@/components/Configuration.vue";
 
 export default {
-  components: {Configuration, ConfigLine, Dialog, TitleValue, Clock, BlindsInfo},
+  components: {Configuration, Dialog, TitleValue, Clock, BlindsInfo},
   computed: {
     currentBlinds() {
       return this.blinds[this.levelIndex]
@@ -82,10 +81,11 @@ export default {
       return this.entries * this.entryFee + this.reentries * this.reentryFee + this.addons * this.addonFee + this.addedPrize
     },
     avgStack() {
-      let avgStack = Math.round(this.totalStack / this.remainingPlayers)
-      if (isNaN(avgStack)) {
+      if (this.remainingPlayers === 0) {
         return 0
       }
+      let avgStack = Math.round(this.totalStack / this.remainingPlayers)
+
       if (avgStack >= 1000000) {
         return (avgStack / 1000000).toFixed(1) + 'M';
       }
@@ -147,22 +147,55 @@ export default {
       this.entries++
     },
     unRegisterPlayer() {
-      this.remainingPlayers--
-      this.entries--
+      //TODO revisit logic, maybe can be done with watch better?
+      if (this.remainingPlayers > 0) {
+        this.remainingPlayers--
+      }
+      if (this.entries > 0) {
+        this.entries--
+      }
     },
     addReentry() {
+      if (this.remainingPlayers >= this.entries) {
+        return
+      }
       this.remainingPlayers++
       this.reentries++
     },
     removeReentry() {
-      this.remainingPlayers--
+      if (this.reentries <= 0) {
+        return
+      }
+      if (this.remainingPlayers > 0) {
+        this.remainingPlayers--
+      }
       this.reentries--
+    },
+    addAddon() {
+      this.addons++
+    },
+    removeAddon() {
+      if (this.addons > 0) {
+        this.addons--
+      }
+    },
+    eliminatePlayer() {
+      if (this.remainingPlayers > 1) {
+        this.remainingPlayers--
+      }
+    },
+    undoElimination() {
+      if (this.remainingPlayers < this.entries) {
+        this.remainingPlayers++
+      }
     }
-  },
+  }
+  ,
   mounted() {
     // Set initial cursor hide timer
     this.resetCursorTimer();
-  },
+  }
+  ,
   beforeDestroy() {
     // Clean up the timer when the component is destroyed
     clearTimeout(this.cursorTimer);
