@@ -27,12 +27,19 @@
     </div>
   </main>
   <Dialog v-if="showDialog" @close="showDialog = false">
-    <div class="settings-form">
-      <ConfigLine title="Entries" :value="entries" @increment="registerPlayer" @decrement="unRegisterPlayer"/>
-      <ConfigLine title="Reentries" :value="reentries" @increment="addReentry" @decrement="removeReentry"/>
-      <ConfigLine title="Addons" :value="addons" @increment="addons++" @decrement="addons--"/>
-      <ConfigLine title="Remaining Players" :value="remainingPlayers" @increment="remainingPlayers++" @decrement="remainingPlayers--"/>
-    </div>
+    <Configuration :entries="entries"
+                   :reentries="reentries"
+                   :addons="addons"
+                   :remainingPlayers="remainingPlayers"
+                   @registerPlayer="registerPlayer"
+                   @unregisterPlayer="unRegisterPlayer"
+                   @addReentry="addReentry"
+                   @removeReentry="removeReentry"
+                   @addAddon="addons++"
+                   @removeAddon="addons--"
+                   @eliminatePlayer="remainingPlayers--"
+                   @undoElimination="remainingPlayers++"
+    />
   </Dialog>
   <span class="settings" @click="showDialog = true">Settings</span>
 </template>
@@ -44,9 +51,10 @@ import {nextTick} from "vue";
 import TitleValue from "@/components/TitleValue.vue";
 import Dialog from "@/components/Dialog.vue";
 import ConfigLine from "@/components/ConfigLine.vue";
+import Configuration from "@/components/Configuration.vue";
 
 export default {
-  components: {ConfigLine, Dialog, TitleValue, Clock, BlindsInfo},
+  components: {Configuration, ConfigLine, Dialog, TitleValue, Clock, BlindsInfo},
   computed: {
     currentBlinds() {
       return this.blinds[this.levelIndex]
@@ -74,14 +82,14 @@ export default {
       return this.entries * this.entryFee + this.reentries * this.reentryFee + this.addons * this.addonFee + this.addedPrize
     },
     avgStack() {
-      let avgStack =  Math.round(this.totalStack / this.remainingPlayers)
-      if(isNaN(avgStack)){
+      let avgStack = Math.round(this.totalStack / this.remainingPlayers)
+      if (isNaN(avgStack)) {
         return 0
       }
-      if(avgStack >= 1000000){
+      if (avgStack >= 1000000) {
         return (avgStack / 1000000).toFixed(1) + 'M';
       }
-      if(avgStack >= 100000){
+      if (avgStack >= 100000) {
         return (avgStack / 1000).toFixed(1) + 'K';
       }
       return avgStack;
@@ -134,19 +142,19 @@ export default {
     toggle() {
       this.$refs.clock?.toggle()
     },
-    registerPlayer(){
+    registerPlayer() {
       this.remainingPlayers++
       this.entries++
     },
-    unRegisterPlayer(){
+    unRegisterPlayer() {
       this.remainingPlayers--
       this.entries--
     },
-    addReentry(){
+    addReentry() {
       this.remainingPlayers++
       this.reentries++
     },
-    removeReentry(){
+    removeReentry() {
       this.remainingPlayers--
       this.reentries--
     }
@@ -197,6 +205,7 @@ main
       text-align: center
       font-size: 0.85em
       line-height: 1.4em
+
       .tournament
         font-size: 2em
 
@@ -236,8 +245,10 @@ main
       font-size: 1.5em
       width: 100%
       text-align: center
+
 .primary, :deep(.primary)
   color: $primary-color
+
 .secondary, :deep(.secondary)
   color: $secondary-color
 
