@@ -1,12 +1,16 @@
 *
 
+!.drone.yml
 !.gitignore
+!Dockerfile
 !index.html
 !jsconfig.json
 !package.json
 !package-lock.json
 !README.md
 !vite.config.js
+!nginx
+!nginx/**
 !public
 !public/**
 !src

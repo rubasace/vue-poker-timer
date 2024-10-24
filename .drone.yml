@@ -1,0 +1,29 @@
+kind: pipeline
+type: kubernetes
+name: default
+
+steps:
+  - name: build
+    image: 18.20.4-alpine3.20
+    commands:
+      - npm ci
+      - npm run build
+
+  - name: bake
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_user
+      password:
+        from_secret: docker_pass
+      repo: registry.nasvigo.com/v2/rubasace/vue-poker-timer
+      registry: registry.nasvigo.com/v2
+      tags: 1.0.0.${CI_BUILD_NUMBER}
+    when:
+      branch:
+        - master
+        - release/*
+
+trigger:
+  event:
+    - push
