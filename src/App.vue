@@ -8,7 +8,7 @@ import Configuration from "@/components/Configuration.vue";
 import Dialog from "primevue/dialog";
 import { useEntriesStore } from "@/stores/playerActions";
 
-const playerActionsStore = useEntriesStore();
+const entriesStore = useEntriesStore();
 
 // Reactive data properties
 const tournamentSeries = ref("Marcosfa Poker Tour");
@@ -36,27 +36,27 @@ const nextBlinds = computed(() => {
   return `${parts[0]}/${parts[1]}(${parts[2]})`;
 });
 const totalStack = computed(() => {
-  return initialStack.value * (playerActionsStore.entries + playerActionsStore.reentries) + playerActionsStore.addons * addonStack.value;
+  return initialStack.value * (entriesStore.entries + entriesStore.reentries) + entriesStore.addons * addonStack.value;
 });
 const totalPrizePool = computed(() => {
-  console.log('entries:', playerActionsStore.entries);
-  console.log('reentries:', playerActionsStore.reentries);
-  console.log('addons:', playerActionsStore.addons);
+  console.log('entries:', entriesStore.entries);
+  console.log('reentries:', entriesStore.reentries);
+  console.log('addons:', entriesStore.addons);
   console.log('entryFee:', entryFee.value);
   console.log('reentryFee:', reentryFee.value);
   console.log('addonFee:', addonFee.value);
   console.log('addedPrize:', addedPrize.value);
 
   return (
-      playerActionsStore.entries * entryFee.value +
-      playerActionsStore.reentries * reentryFee.value +
-      playerActionsStore.addons * addonFee.value +
+      entriesStore.entries * entryFee.value +
+      entriesStore.reentries * reentryFee.value +
+      entriesStore.addons * addonFee.value +
       addedPrize.value
   );
 });
 const avgStack = computed(() => {
-  if (playerActionsStore.remainingPlayers === 0) return 0;
-  let avg = Math.round(totalStack.value / playerActionsStore.remainingPlayers);
+  if (entriesStore.remainingPlayers === 0) return 0;
+  let avg = Math.round(totalStack.value / entriesStore.remainingPlayers);
   if (avg >= 1000000) return (avg / 1000000).toFixed(1) + "M";
   if (avg >= 100000) return (avg / 1000).toFixed(1) + "K";
   return avg;
@@ -99,8 +99,8 @@ onBeforeUnmount(() => {
     <div class="aside left-panel">
       <TitleValue title="Prize pool" :value="totalPrizePool+currency"/>
       <TitleValue title="Payouts" value=""/>
-      <TitleValue title="Reentries" :value="playerActionsStore.reentries"/>
-      <TitleValue title="Addons" :value="playerActionsStore.addons"/>
+      <TitleValue title="Reentries" :value="entriesStore.reentries"/>
+      <TitleValue title="Addons" :value="entriesStore.addons"/>
     </div>
     <div class="central-panel">
       <div class="header">
@@ -117,7 +117,7 @@ onBeforeUnmount(() => {
       </div>
     </div>
     <div class="aside right-panel">
-      <TitleValue title="Players" :value="playerActionsStore.remainingPlayers + '/' + playerActionsStore.entries"/>
+      <TitleValue title="Players" :value="entriesStore.remainingPlayers + '/' + entriesStore.entries"/>
       <TitleValue title="Level" :value="levelIndex + 1"/>
       <TitleValue title="Avg Stack" :value="avgStack.toLocaleString()"/>
     </div>

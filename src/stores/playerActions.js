@@ -1,80 +1,64 @@
-import {ref} from 'vue'
-import {defineStore} from 'pinia'
+import { defineStore } from 'pinia'
+import { useLocalStorage } from '@vueuse/core'
 
-export const useEntriesStore = defineStore('playerActions', () => {
-    const remainingPlayers = ref(0)
-    const entries = ref(0)
-    const reentries = ref(0)
-    const addons = ref(0)
-
-
-    function registerPlayer() {
-        remainingPlayers.value++
-        entries.value++
-    }
-
-    function unRegisterPlayer() {
-        //TODO revisit logic, maybe can be done with watch better?
-        if (remainingPlayers.value > 0) {
-            remainingPlayers.value--
+export const useEntriesStore = defineStore({
+    id: 'playerActions',
+    state: () => ({
+        remainingPlayers: useLocalStorage('vue-poker-timer-remaining-players', 0),
+        entries: useLocalStorage('vue-poker-timer-entries', 0),
+        reentries: useLocalStorage('vue-poker-timer-reentries', 0),
+        addons: useLocalStorage('vue-poker-timer-addons', 0)
+    }),
+    actions: {
+        registerPlayer() {
+            this.remainingPlayers++
+            this.entries++
+        },
+        unRegisterPlayer() {
+            if (this.remainingPlayers > 0) {
+                this.remainingPlayers--
+            }
+            if (this.entries > 0) {
+                this.entries--
+            }
+        },
+        addReentry() {
+            if (this.remainingPlayers < this.entries) {
+                this.remainingPlayers++
+                this.reentries++
+            }
+        },
+        removeReentry() {
+            if (this.reentries > 0) {
+                if (this.remainingPlayers > 0) {
+                    this.remainingPlayers--
+                }
+                this.reentries--
+            }
+        },
+        addAddon() {
+            this.addons++
+        },
+        removeAddon() {
+            if (this.addons > 0) {
+                this.addons--
+            }
+        },
+        eliminatePlayer() {
+            if (this.remainingPlayers > 1) {
+                this.remainingPlayers--
+            }
+        },
+        undoElimination() {
+            if (this.remainingPlayers < this.entries) {
+                this.remainingPlayers++
+            }
+        },
+        resetStore(){
+            this.remainingPlayers = 0
+            this.entries = 0
+            this.reentries = 0
+            this.addons = 0
         }
-        if (entries.value > 0) {
-            entries.value--
-        }
-    }
-
-    function addReentry() {
-        if (remainingPlayers.value >= entries.value) {
-            return
-        }
-        remainingPlayers.value++
-        reentries.value++
-    }
-
-    function removeReentry() {
-        if (reentries.value <= 0) {
-            return
-        }
-        if (remainingPlayers.value > 0) {
-            remainingPlayers.value--
-        }
-        reentries.value--
-    }
-
-    function addAddon() {
-        addons.value++
-    }
-
-    function removeAddon() {
-        if (addons.value > 0) {
-            addons.value--
-        }
-    }
-
-    function eliminatePlayer() {
-        if (remainingPlayers.value > 1) {
-            remainingPlayers.value--
-        }
-    }
-
-    function undoElimination() {
-        if (remainingPlayers.value < entries.value) {
-            remainingPlayers.value++
-        }
-    }
-
-    return {
-        remainingPlayers,
-        entries,
-        reentries,
-        addons,
-        registerPlayer,
-        unRegisterPlayer,
-        addReentry,
-        removeReentry,
-        addAddon,
-        removeAddon,
-        eliminatePlayer,
-        undoElimination
     }
 })
