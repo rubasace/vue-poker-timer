@@ -17,7 +17,7 @@ export default {
   data() {
     return {
       countDown: this.minutes * 60,
-      active: false
+      active: true
     }
   },
   methods: {

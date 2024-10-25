@@ -9,7 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@primevue/themes": "^4.1.1",
     "pinia": "^2.1.7",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.1.1",
     "vue": "^3.4.29"
   },
   "devDependencies": {

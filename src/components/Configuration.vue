@@ -1,55 +1,67 @@
 <script setup lang="ts">
 
-const props = defineProps<{
-  entries: number
-  reentries: number
-  addons: number
-  remainingPlayers: number
-}>()
+import Stat from "@/components/Stat.vue";
+import ActionButton from "@/components/ActionButton.vue";
+import {useEntriesStore} from "@/stores/playerActions";
+
+const playerActionsStore = useEntriesStore();
 
 </script>
 <template>
-  <div class="settings-form">
-    <div class="details">
-      <span>Entries: {{ entries }}</span>
-      <span>Reentries: {{ reentries }}</span>
-      <span>Addons: {{ addons }}</span>
-      <span>Remaining Players: {{ remainingPlayers }}</span>
-    </div>
-    <div class="actions">
-      <button @click="$emit('registerPlayer')">Register Player</button>
-      <button @click="$emit('unregisterPlayer')">Unregister Player</button>
-      <button @click="$emit('addReentry')">Add Reentry</button>
-      <button @click="$emit('removeReentry')">Remove Reentry</button>
-      <button @click="$emit('addAddon')">Add Addon</button>
-      <button @click="$emit('removeAddon')">Remove Addon</button>
-      <button @click="$emit('eliminatePlayer')">Register Elimination</button>
-      <button @click="$emit('undoElimination')">Undo Elimination</button>
-    </div>
+
+  <div class="card">
+    <Tabs value="0">
+      <TabList>
+        <Tab value="0">Actions</Tab>
+        <Tab value="1">Tournament Structure</Tab>
+      </TabList>
+      <TabPanels>
+        <TabPanel value="0">
+          <div class="settings-form">
+            <div class="details section">
+              <Stat title="Entries" :value="playerActionsStore.entries"/>
+              <Stat title="Reentries" :value="playerActionsStore.reentries"/>
+              <Stat title="Addons" :value="playerActionsStore.addons"/>
+              <Stat title="Remaining Players" :value="playerActionsStore.remainingPlayers+'/'+playerActionsStore.entries"/>
+            </div>
+            <div class="actions section">
+              <ActionButton title="Register Player" icon="pi-user-plus" @click="playerActionsStore.registerPlayer"/>
+              <ActionButton title="Unregister Player" icon="pi-user-minus" @click="playerActionsStore.unRegisterPlayer()"/>
+              <ActionButton title="Add Reentry" icon="pi-refresh" @click="playerActionsStore.addReentry"/>
+              <ActionButton title="Remove Reentry" icon="pi-replay" @click="playerActionsStore.removeReentry"/>
+              <ActionButton title="Add Addon" icon="pi-arrow-up" @click="playerActionsStore.addAddon"/>
+              <ActionButton title="Remove Addon" icon="pi-arrow-down" @click="playerActionsStore.removeAddon"/>
+              <ActionButton title="Eliminate Player" icon="pi-times" @click="playerActionsStore.eliminatePlayer"/>
+              <ActionButton title="Undo Elimination" icon="pi-history" @click="playerActionsStore.undoElimination"/>
+            </div>
+          </div>
+        </TabPanel>
+        <TabPanel value="1">
+          Work in Progress
+        </TabPanel>
+      </TabPanels>
+    </Tabs>
   </div>
 </template>
 
 
 <style scoped lang="sass">
 .settings-form
-  .details
-    display: grid
-    grid-template-columns: 1fr 1fr 1fr 1fr
-    grid-auto-rows: minmax(10px, auto)
-    grid-gap: 10px
-    margin-bottom: 3em
-    span
-      display: block
-      border: 1px solid black
-      text-align: center
-      height: 3em
+  .section
+    display: flex
+    flex-wrap: wrap
+    flex-direction: row
+    justify-content: space-evenly
+    align-content: space-around
+    margin-bottom: 5em
+    gap: 10px
+
+    & > *
+      //flex-basis: calc(22% - 10px)
+      //max-width: calc(22% - 10px)
+
   .actions
-    display: grid
-    grid-template-columns: 1fr 1fr 1fr 1fr
-    grid-auto-rows: minmax(10px, auto)
-    grid-gap: 10px
-
-    button
-      padding: 0.5em
-
+    width: 80%
+    margin: 0 auto
+    font-size: 0.8em
 </style>

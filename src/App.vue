@@ -1,10 +1,106 @@
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from "vue";
+import { storeToRefs } from 'pinia'
+import BlindsInfo from "@/components/BlindsInfo.vue";
+import Clock from "@/components/Clock.vue";
+import TitleValue from "@/components/TitleValue.vue";
+import Configuration from "@/components/Configuration.vue";
+import Dialog from "primevue/dialog";
+import { useEntriesStore } from "@/stores/playerActions";
+
+const playerActionsStore = useEntriesStore();
+
+// Reactive data properties
+const tournamentSeries = ref("Marcosfa Poker Tour");
+const tournamentName = ref("#2");
+const currency = ref("€");
+const levelIndex = ref(0);
+const initialStack = ref(25000);
+const addonStack = ref(10000);
+const entryFee = ref(0);
+const reentryFee = ref(5);
+const addonFee = ref(5);
+const addedPrize = ref(20);
+const minutes = ref(15);
+const blinds = ref(['20/40/40', '30/60/60', '40/80/80', '50/100/100', '60/120/120', '80/160/160', '100/200/200']);
+const breaks = ref(['15/6', '15/12', '15/18', '15/24', '15/30']);
+const showDialog = ref(false);
+
+// Computed properties
+const currentBlinds = computed(() => blinds.value[levelIndex.value]);
+const smallBlind = computed(() => currentBlinds.value.split('/')[0]);
+const bigBlind = computed(() => currentBlinds.value.split('/')[1]);
+const ante = computed(() => currentBlinds.value.split('/')[2]);
+const nextBlinds = computed(() => {
+  const parts = blinds.value[levelIndex.value + 1]?.split('/') || [];
+  return `${parts[0]}/${parts[1]}(${parts[2]})`;
+});
+const totalStack = computed(() => {
+  return initialStack.value * (playerActionsStore.entries + playerActionsStore.reentries) + playerActionsStore.addons * addonStack.value;
+});
+const totalPrizePool = computed(() => {
+  console.log('entries:', playerActionsStore.entries);
+  console.log('reentries:', playerActionsStore.reentries);
+  console.log('addons:', playerActionsStore.addons);
+  console.log('entryFee:', entryFee.value);
+  console.log('reentryFee:', reentryFee.value);
+  console.log('addonFee:', addonFee.value);
+  console.log('addedPrize:', addedPrize.value);
+
+  return (
+      playerActionsStore.entries * entryFee.value +
+      playerActionsStore.reentries * reentryFee.value +
+      playerActionsStore.addons * addonFee.value +
+      addedPrize.value
+  );
+});
+const avgStack = computed(() => {
+  if (playerActionsStore.remainingPlayers === 0) return 0;
+  let avg = Math.round(totalStack.value / playerActionsStore.remainingPlayers);
+  if (avg >= 1000000) return (avg / 1000000).toFixed(1) + "M";
+  if (avg >= 100000) return (avg / 1000).toFixed(1) + "K";
+  return avg;
+});
+
+// Methods
+function reduceLevel() {
+  levelIndex.value--;
+  if (levelIndex.value < 0) nextTick(() => (levelIndex.value = 0));
+}
+
+function incrementLevel() {
+  levelIndex.value++;
+}
+
+// Cursor reset logic
+let cursorTimer;
+function resetCursorTimer() {
+  clearTimeout(cursorTimer);
+  document.body.style.cursor = "unset";
+  cursorTimer = setTimeout(() => {
+    if (!showDialog.value) document.body.style.cursor = "none";
+  }, 5000);
+}
+
+// Lifecycle hooks
+onMounted(() => {
+  resetCursorTimer();
+  document.body.addEventListener("mousemove", resetCursorTimer);
+});
+
+onBeforeUnmount(() => {
+  clearTimeout(cursorTimer);
+  document.body.removeEventListener("mousemove", resetCursorTimer);
+});
+</script>
+
 <template>
   <main @mousemove="resetCursorTimer">
     <div class="aside left-panel">
       <TitleValue title="Prize pool" :value="totalPrizePool+currency"/>
       <TitleValue title="Payouts" value=""/>
-      <TitleValue title="Reentries" :value="reentries"/>
-      <TitleValue title="Addons" :value="addons"/>
+      <TitleValue title="Reentries" :value="playerActionsStore.reentries"/>
+      <TitleValue title="Addons" :value="playerActionsStore.addons"/>
     </div>
     <div class="central-panel">
       <div class="header">
@@ -12,7 +108,7 @@
         <div class="tournament primary">{{ tournamentName }}</div>
       </div>
       <div class="timer">
-        <Clock class="clock" :minutes="minutes" :key="levelIndex" ref="clock" @finished="incrementLevel()" @previous="reduceLevel()" @next="incrementLevel()"/>
+        <Clock class="clock" ref="clock" :minutes="minutes" :key="levelIndex" @finished="incrementLevel()" @previous="reduceLevel()" @next="incrementLevel()"/>
       </div>
       <div class="current-level">
         <BlindsInfo text="blinds" :value="`${smallBlind}/${bigBlind}`"/>
@@ -21,187 +117,16 @@
       </div>
     </div>
     <div class="aside right-panel">
-      <TitleValue title="Players" :value="remainingPlayers + '/' + totalPlayers"/>
+      <TitleValue title="Players" :value="playerActionsStore.remainingPlayers + '/' + playerActionsStore.entries"/>
       <TitleValue title="Level" :value="levelIndex + 1"/>
       <TitleValue title="Avg Stack" :value="avgStack.toLocaleString()"/>
     </div>
   </main>
-  <Dialog v-if="showDialog" @close="showDialog = false">
-    <Configuration :entries="entries"
-                   :reentries="reentries"
-                   :addons="addons"
-                   :remainingPlayers="remainingPlayers"
-                   @registerPlayer="registerPlayer"
-                   @unregisterPlayer="unRegisterPlayer"
-                   @addReentry="addReentry"
-                   @removeReentry="removeReentry"
-                   @addAddon="addAddon"
-                   @removeAddon="removeAddon"
-                   @eliminatePlayer="eliminatePlayer"
-                   @undoElimination="undoElimination"
-    />
+  <Dialog class="dialog" v-model:visible="showDialog" modal header="Settings" style="width: 66%;max-width: 1000px;height: 100%">
+    <Configuration/>
   </Dialog>
-  <span class="settings" @click="showDialog = true">Settings</span>
+  <i class="pi pi-cog settings-button" @click="showDialog = true"/>
 </template>
-
-<script>
-import BlindsInfo from "@/components/BlindsInfo.vue";
-import Clock from "@/components/Clock.vue";
-import {nextTick} from "vue";
-import TitleValue from "@/components/TitleValue.vue";
-import Dialog from "@/components/Dialog.vue";
-import Configuration from "@/components/Configuration.vue";
-
-export default {
-  components: {Configuration, Dialog, TitleValue, Clock, BlindsInfo},
-  computed: {
-    currentBlinds() {
-      return this.blinds[this.levelIndex]
-    },
-    smallBlind() {
-      return this.currentBlinds.split('/')[0]
-    },
-    bigBlind() {
-      return this.currentBlinds.split('/')[1]
-    },
-    ante() {
-      return this.currentBlinds.split('/')[2]
-    },
-    nextBlinds() {
-      const parts = this.blinds[this.levelIndex + 1].split('/')
-      return `${parts[0]}/${parts[1]}(${parts[2]})`
-    },
-    totalPlayers() {
-      return this.entries
-    },
-    totalStack() {
-      return this.initialStack * (this.entries + this.reentries) + this.addons * this.addonStack
-    },
-    totalPrizePool() {
-      return this.entries * this.entryFee + this.reentries * this.reentryFee + this.addons * this.addonFee + this.addedPrize
-    },
-    avgStack() {
-      if (this.remainingPlayers === 0) {
-        return 0
-      }
-      let avgStack = Math.round(this.totalStack / this.remainingPlayers)
-
-      if (avgStack >= 1000000) {
-        return (avgStack / 1000000).toFixed(1) + 'M';
-      }
-      if (avgStack >= 100000) {
-        return (avgStack / 1000).toFixed(1) + 'K';
-      }
-      return avgStack;
-    }
-  },
-  data() {
-    return {
-      tournamentSeries: "Marcosfa Poker Tour",
-      tournamentName: "#2",
-      currency: "€",
-      levelIndex: 0,
-      remainingPlayers: 0,
-      entries: 0,
-      reentries: 0,
-      addons: 0,
-      initialStack: 25000,
-      addonStack: 10000,
-      entryFee: 0,
-      reentryFee: 5,
-      addonFee: 5,
-      addedPrize: 20,
-      minutes: 15,
-      //TODO support breaks (probably as we extract structure to JSON/YAML file
-      blinds: ['20/40/40', '30/60/60', '40/80/80', '50/100/100', '60/120/120', '80/160/160', '100/200/200'],
-      breaks: ['15/6', '15/12', '15/18', '15/24', '15/30'],
-      showDialog: false
-    }
-  },
-  methods: {
-    reduceLevel() {
-      this.levelIndex--
-      if (this.levelIndex < 0) {
-        nextTick(() => this.levelIndex = 0)
-      }
-    },
-    incrementLevel() {
-      this.levelIndex++
-    },
-    //TODO move to a separate component and use Composition API
-    resetCursorTimer() {
-      // Reset any previous timer
-      clearTimeout(this.cursorTimer);
-      // Show the cursor again
-      document.body.style.cursor = "unset";
-      // Set a new timer to hide the cursor after 5 seconds
-      this.cursorTimer = setTimeout(() => {
-        document.body.style.cursor = "none";
-      }, 5000);
-    },
-    toggle() {
-      this.$refs.clock?.toggle()
-    },
-    registerPlayer() {
-      this.remainingPlayers++
-      this.entries++
-    },
-    unRegisterPlayer() {
-      //TODO revisit logic, maybe can be done with watch better?
-      if (this.remainingPlayers > 0) {
-        this.remainingPlayers--
-      }
-      if (this.entries > 0) {
-        this.entries--
-      }
-    },
-    addReentry() {
-      if (this.remainingPlayers >= this.entries) {
-        return
-      }
-      this.remainingPlayers++
-      this.reentries++
-    },
-    removeReentry() {
-      if (this.reentries <= 0) {
-        return
-      }
-      if (this.remainingPlayers > 0) {
-        this.remainingPlayers--
-      }
-      this.reentries--
-    },
-    addAddon() {
-      this.addons++
-    },
-    removeAddon() {
-      if (this.addons > 0) {
-        this.addons--
-      }
-    },
-    eliminatePlayer() {
-      if (this.remainingPlayers > 1) {
-        this.remainingPlayers--
-      }
-    },
-    undoElimination() {
-      if (this.remainingPlayers < this.entries) {
-        this.remainingPlayers++
-      }
-    }
-  }
-  ,
-  mounted() {
-    // Set initial cursor hide timer
-    this.resetCursorTimer();
-  }
-  ,
-  beforeDestroy() {
-    // Clean up the timer when the component is destroyed
-    clearTimeout(this.cursorTimer);
-  }
-}
-</script>
 
 <style lang="sass" scoped>
 $primary-color: #0b5404
@@ -285,19 +210,14 @@ main
 .secondary, :deep(.secondary)
   color: $secondary-color
 
-.settings
+.settings-button
   position: absolute
-  top: 0
-  right: 0
-  padding: 15px
-
-.settings-form
-  padding: 20px
-  display: flex
-  flex-direction: column
-  align-content: space-between
-  color: black
-
+  top: 25px
+  right: 25px
+  font-size: 2em
+  &:hover
+    cursor: pointer
+    color: $primary-color
 
 //margin-top: 140px
 @media (max-width: 1024px)
