@@ -30,4 +30,6 @@ const blindValues = computed(() => {
     display: flex
     font-size: 0.6em
     justify-content: space-between
+    //.value
+      //font-size: 1.3em
 </style>

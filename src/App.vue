@@ -6,62 +6,48 @@ import TitleValue from "@/components/TitleValue.vue";
 import Configuration from "@/components/Configuration.vue";
 import Dialog from "primevue/dialog";
 import {useEntriesStore} from "@/stores/playerActions";
-
 import {useTimerStore} from "@/stores/timerState.js";
+import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
 
 const entriesStore = useEntriesStore();
-
 const timerStore = useTimerStore();
+const tournamentInfoStore = useTournamentInfoStore();
 
-const tournamentSeries = ref("Marcosfa Poker Tour");
-const tournamentName = ref("#2");
-const currency = ref("€");
-const levelIndex = ref(0);
-const initialStack = ref(25000);
-const addonStack = ref(10000);
-const entryFee = ref(0);
-const reentryFee = ref(5);
-const addonFee = ref(5);
-const addedPrize = ref(20);
-const minutes = ref(20);
-const blinds = ref(['20/40/40', '30/60/60', '40/80/80', '50/100/100', '60/120/120', '80/160/160', '100/200/200']);
+
 const breaks = ref(['15/6', '15/12', '15/18', '15/24', '15/30']);
 const showDialog = ref(false);
 
 
-
-const currentBlinds = computed(() => blinds.value[timerStore.levelIndex]??'0/0/0');
+const currentBlinds = computed(() => tournamentInfoStore.currentLevel ? `${tournamentInfoStore.currentLevel.smallBlind}/${tournamentInfoStore.currentLevel.bigBlind}/${tournamentInfoStore.currentLevel.ante}`: '0/0/0');
 const smallBlind = computed(() => currentBlinds.value.split('/')[0]);
 const bigBlind = computed(() => currentBlinds.value.split('/')[1]);
 const ante = computed(() => currentBlinds.value.split('/')[2]);
 const nextBlinds = computed(() => {
-  const nextValue = blinds.value[timerStore.levelIndex + 1];
-  if(!nextValue){
+  if(!tournamentInfoStore.nextLevel){
     return 'NONE';
   }
-  const parts = blinds.value[timerStore.levelIndex + 1]?.split('/');
-  return `${parts[0]}/${parts[1]}(${parts[2]})`;
+  return `${tournamentInfoStore.nextLevel.smallBlind}/${tournamentInfoStore.nextLevel.bigBlind}/${tournamentInfoStore.nextLevel.ante}`;
 });
 const totalStack = computed(() => {
-  return initialStack.value * (entriesStore.entries + entriesStore.reentries) + entriesStore.addons * addonStack.value;
+  return tournamentInfoStore.initialStack * (entriesStore.entries + entriesStore.reentries) + entriesStore.addons * tournamentInfoStore.addonStack;
 });
 const totalPrizePool = computed(() => {
   return (
-      entriesStore.entries * entryFee.value +
-      entriesStore.reentries * reentryFee.value +
-      entriesStore.addons * addonFee.value +
-      addedPrize.value
+      entriesStore.entries * tournamentInfoStore.entryFee +
+      entriesStore.reentries * tournamentInfoStore.reentryFee +
+      entriesStore.addons * tournamentInfoStore.addonFee +
+      tournamentInfoStore.addedPrize
   );
 });
 const avgStack = computed(() => {
-  if (entriesStore.remainingPlayers === 0) return 0;
+  if (entriesStore.remainingPlayers === 0) {
+    return 0;
+  }
   let avg = Math.round(totalStack.value / entriesStore.remainingPlayers);
   if (avg >= 1000000) return (avg / 1000000).toFixed(1) + "M";
   if (avg >= 100000) return (avg / 1000).toFixed(1) + "K";
   return avg;
 });
-
-// Methods
 
 // Cursor reset logic
 let cursorTimer;
@@ -85,21 +71,22 @@ onBeforeUnmount(() => {
 });
 </script>
 
+
 <template>
   <main @mousemove="resetCursorTimer">
     <div class="aside left-panel">
-      <TitleValue title="Prize pool" :value="totalPrizePool+currency"/>
+      <TitleValue title="Prize pool" :value="totalPrizePool+tournamentInfoStore.currency"/>
       <TitleValue title="Payouts" value=""/>
       <TitleValue title="Reentries" :value="entriesStore.reentries"/>
       <TitleValue title="Addons" :value="entriesStore.addons"/>
     </div>
     <div class="central-panel">
       <div class="header">
-        <div class="series secondary" v-if="tournamentSeries">{{ tournamentSeries }}</div>
-        <div class="tournament primary">{{ tournamentName }}</div>
+        <div class="series secondary" v-if="tournamentInfoStore.tournamentSeries">{{ tournamentInfoStore.tournamentSeries }}</div>
+        <div class="tournament primary">{{ tournamentInfoStore.tournamentName }}</div>
       </div>
       <div class="timer">
-        <Clock class="clock" ref="clock" :minutes="minutes"/>
+        <Clock class="clock" ref="clock"/>
       </div>
       <div class="current-level">
         <BlindsInfo text="blinds" :value="`${smallBlind}/${bigBlind}`"/>

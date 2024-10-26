@@ -2,8 +2,10 @@
 
 import {computed, defineProps, ref, watch} from "vue";
 import {useTimerStore} from "@/stores/timerState.js";
+import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
 
 const timerStore = useTimerStore();
+const tournamentInfoStore = useTournamentInfoStore();
 
 const props = defineProps({
   minutes: {
@@ -13,7 +15,7 @@ const props = defineProps({
 })
 
 
-const countDown = ref(10)
+const countDown = ref(getLevelTime())
 const active = ref(true)
 
 
@@ -52,8 +54,12 @@ function toggle() {
   active.value = !active.value
 }
 
+function getLevelTime(){
+  return 60 * tournamentInfoStore.currentLevel.minutes
+}
+
 watch(levelIndex, () => {
-  countDown.value = props.minutes * 60
+  countDown.value = getLevelTime()
 })
 
 countDownTimer()

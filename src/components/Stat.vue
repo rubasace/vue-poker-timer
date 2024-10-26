@@ -16,7 +16,7 @@ defineProps<{
 
 <style scoped lang="sass">
 .action-button
-  width: 12em
+  width: 13em
   border: 1px solid #aaa
   border-radius: 12px
   display: flex
