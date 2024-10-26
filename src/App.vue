@@ -1,16 +1,18 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from "vue";
-import { storeToRefs } from 'pinia'
+import {computed, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import BlindsInfo from "@/components/BlindsInfo.vue";
 import Clock from "@/components/Clock.vue";
 import TitleValue from "@/components/TitleValue.vue";
 import Configuration from "@/components/Configuration.vue";
 import Dialog from "primevue/dialog";
-import { useEntriesStore } from "@/stores/playerActions";
+import {useEntriesStore} from "@/stores/playerActions";
+
+import {useTimerStore} from "@/stores/timerState.js";
 
 const entriesStore = useEntriesStore();
 
-// Reactive data properties
+const timerStore = useTimerStore();
+
 const tournamentSeries = ref("Marcosfa Poker Tour");
 const tournamentName = ref("#2");
 const currency = ref("€");
@@ -21,32 +23,29 @@ const entryFee = ref(0);
 const reentryFee = ref(5);
 const addonFee = ref(5);
 const addedPrize = ref(20);
-const minutes = ref(15);
+const minutes = ref(20);
 const blinds = ref(['20/40/40', '30/60/60', '40/80/80', '50/100/100', '60/120/120', '80/160/160', '100/200/200']);
 const breaks = ref(['15/6', '15/12', '15/18', '15/24', '15/30']);
 const showDialog = ref(false);
 
-// Computed properties
-const currentBlinds = computed(() => blinds.value[levelIndex.value]);
+
+
+const currentBlinds = computed(() => blinds.value[timerStore.levelIndex]??'0/0/0');
 const smallBlind = computed(() => currentBlinds.value.split('/')[0]);
 const bigBlind = computed(() => currentBlinds.value.split('/')[1]);
 const ante = computed(() => currentBlinds.value.split('/')[2]);
 const nextBlinds = computed(() => {
-  const parts = blinds.value[levelIndex.value + 1]?.split('/') || [];
+  const nextValue = blinds.value[timerStore.levelIndex + 1];
+  if(!nextValue){
+    return 'NONE';
+  }
+  const parts = blinds.value[timerStore.levelIndex + 1]?.split('/');
   return `${parts[0]}/${parts[1]}(${parts[2]})`;
 });
 const totalStack = computed(() => {
   return initialStack.value * (entriesStore.entries + entriesStore.reentries) + entriesStore.addons * addonStack.value;
 });
 const totalPrizePool = computed(() => {
-  console.log('entries:', entriesStore.entries);
-  console.log('reentries:', entriesStore.reentries);
-  console.log('addons:', entriesStore.addons);
-  console.log('entryFee:', entryFee.value);
-  console.log('reentryFee:', reentryFee.value);
-  console.log('addonFee:', addonFee.value);
-  console.log('addedPrize:', addedPrize.value);
-
   return (
       entriesStore.entries * entryFee.value +
       entriesStore.reentries * reentryFee.value +
@@ -63,14 +62,6 @@ const avgStack = computed(() => {
 });
 
 // Methods
-function reduceLevel() {
-  levelIndex.value--;
-  if (levelIndex.value < 0) nextTick(() => (levelIndex.value = 0));
-}
-
-function incrementLevel() {
-  levelIndex.value++;
-}
 
 // Cursor reset logic
 let cursorTimer;
@@ -108,7 +99,7 @@ onBeforeUnmount(() => {
         <div class="tournament primary">{{ tournamentName }}</div>
       </div>
       <div class="timer">
-        <Clock class="clock" ref="clock" :minutes="minutes" :key="levelIndex" @finished="incrementLevel()" @previous="reduceLevel()" @next="incrementLevel()"/>
+        <Clock class="clock" ref="clock" :minutes="minutes"/>
       </div>
       <div class="current-level">
         <BlindsInfo text="blinds" :value="`${smallBlind}/${bigBlind}`"/>
@@ -118,7 +109,7 @@ onBeforeUnmount(() => {
     </div>
     <div class="aside right-panel">
       <TitleValue title="Players" :value="entriesStore.remainingPlayers + '/' + entriesStore.entries"/>
-      <TitleValue title="Level" :value="levelIndex + 1"/>
+      <TitleValue title="Level" :value="timerStore.levelIndex + 1"/>
       <TitleValue title="Avg Stack" :value="avgStack.toLocaleString()"/>
     </div>
   </main>
