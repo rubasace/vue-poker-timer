@@ -3,7 +3,7 @@ import {computed, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import BlindsInfo from "@/components/BlindsInfo.vue";
 import Clock from "@/components/Clock.vue";
 import TitleValue from "@/components/TitleValue.vue";
-import Configuration from "@/components/Configuration.vue";
+import Configuration from "@/components/configuration/Configuration.vue";
 import Dialog from "primevue/dialog";
 import {useEntriesStore} from "@/stores/playerActions";
 import {useTimerStore} from "@/stores/timerState.js";
@@ -75,7 +75,7 @@ onBeforeUnmount(() => {
 <template>
   <main @mousemove="resetCursorTimer">
     <div class="aside left-panel">
-      <TitleValue title="Prize pool" :value="totalPrizePool+tournamentInfoStore.currency"/>
+      <TitleValue title="Prize pool" :value="totalPrizePool+tournamentInfoStore.currency.symbol"/>
       <TitleValue title="Payouts" value=""/>
       <TitleValue title="Reentries" :value="entriesStore.reentries"/>
       <TitleValue title="Addons" :value="entriesStore.addons"/>
@@ -88,10 +88,13 @@ onBeforeUnmount(() => {
       <div class="timer">
         <Clock class="clock" ref="clock"/>
       </div>
-      <div class="current-level">
+      <div class="current-level" v-if="!tournamentInfoStore.currentLevel.break">
         <BlindsInfo text="blinds" :value="`${smallBlind}/${bigBlind}`"/>
         <BlindsInfo text="ante" :value="ante"/>
         <BlindsInfo text="Next Level" :value="nextBlinds"/>
+      </div>
+      <div class="break" v-else>
+        <span>BREAK</span>
       </div>
     </div>
     <div class="aside right-panel">
@@ -100,7 +103,7 @@ onBeforeUnmount(() => {
       <TitleValue title="Avg Stack" :value="avgStack.toLocaleString()"/>
     </div>
   </main>
-  <Dialog class="dialog" v-model:visible="showDialog" modal header="Settings" style="width: 66%;max-width: 1000px;height: 100%">
+  <Dialog class="dialog" v-model:visible="showDialog" modal header="Settings" style="width: 85%;max-width: 1000px;height: 100%">
     <Configuration/>
   </Dialog>
   <i class="pi pi-cog settings-button" @click="showDialog = true"/>
@@ -180,6 +183,12 @@ main
     .current-level
       font-size: 1.5em
       width: 100%
+      text-align: center
+
+    .break
+      font-size: 2.8em
+      width: 100%
+      color: $secondary-color
       text-align: center
 
 .primary, :deep(.primary)

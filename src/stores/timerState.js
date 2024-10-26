@@ -1,6 +1,8 @@
 import {defineStore} from 'pinia'
 import {useLocalStorage} from '@vueuse/core'
 import {nextTick} from "vue";
+import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
+
 
 export const useTimerStore = defineStore({
     id: 'timerState',
@@ -15,8 +17,10 @@ export const useTimerStore = defineStore({
                 nextTick(() => (this.levelIndex = 0));
             }
         },
-        //TODO don't allow to increment if no more levels defined
         incrementLevel() {
+            if (this.levelIndex >= useTournamentInfoStore().levels.length - 1) {
+                return
+            }
             this.levelIndex++;
         },
         resetStore() {

@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 
 const props = defineProps<{
   title: string
-  value: string
+  value: number | string
 }>()
 
 </script>
 <template>
-  <div class="title-value" >
-        <span class="text secondary">{{title}}</span>
-        <div class="value">{{value}}</div>
+  <div class="title-value">
+    <span class="text secondary">{{ title }}</span>
+    <div class="value">{{ value }}</div>
   </div>
 </template>
 
@@ -24,6 +23,7 @@ const props = defineProps<{
   justify-content: center
   font-weight: bolder
   text-transform: uppercase
+
   .value
     font-size: 2.2em
 

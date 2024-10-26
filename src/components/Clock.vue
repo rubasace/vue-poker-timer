@@ -1,19 +1,11 @@
 <script setup>
 
-import {computed, defineProps, ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import {useTimerStore} from "@/stores/timerState.js";
 import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
 
 const timerStore = useTimerStore();
 const tournamentInfoStore = useTournamentInfoStore();
-
-const props = defineProps({
-  minutes: {
-    type: Number,
-    required: true
-  }
-})
-
 
 const countDown = ref(getLevelTime())
 const active = ref(true)
@@ -37,16 +29,20 @@ const levelIndex = computed(() => {
   return timerStore.levelIndex
 })
 
+let timer = null;
+
 function countDownTimer() {
-  setTimeout(() => {
+  timer = setTimeout(() => {
     if (active.value) {
       countDown.value -= 1
     }
     if (countDown.value <= 0) {
+      console.log('next level!!')
       countDown.value = 0
       timerStore.incrementLevel()
+    } else {
+      countDownTimer()
     }
-    countDownTimer()
   }, 1000)
 }
 
@@ -54,12 +50,14 @@ function toggle() {
   active.value = !active.value
 }
 
-function getLevelTime(){
-  return 60 * tournamentInfoStore.currentLevel.minutes
+function getLevelTime() {
+  return 60 * (tournamentInfoStore.currentLevel?.minutes ?? 0)
 }
 
 watch(levelIndex, () => {
+  clearTimeout(timer)
   countDown.value = getLevelTime()
+  countDownTimer()
 })
 
 countDownTimer()

@@ -3,7 +3,7 @@ import { computed } from 'vue'
 
 const props = defineProps<{
   text: string
-  value: number
+  value: number | string
 }>()
 
 const blindValues = computed(() => {
