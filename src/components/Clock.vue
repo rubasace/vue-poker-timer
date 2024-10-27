@@ -4,11 +4,12 @@ import {computed, onUnmounted, ref, watch} from "vue";
 import {useTimerStore} from "@/stores/timerState.js";
 import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
 import {formatClockValue} from "@/util/formatUtils.js";
+import beepSound from "@/assets/700-hz-beeps-86815.mp3";
 
 const timerStore = useTimerStore();
 const tournamentInfoStore = useTournamentInfoStore();
 
-const active = ref(true)
+const audio = new Audio(beepSound);
 
 timerStore.levelTimer = calculateLevelSeconds()
 
@@ -17,7 +18,7 @@ const clockValue = computed(() => {
 })
 
 const toggleIcon = computed(() => {
-  if (active.value) {
+  if (timerStore.active) {
     return '⏸'
   } else {
     return '▶'
@@ -32,12 +33,13 @@ let timer = null;
 
 function countDownTimer() {
   timer = setTimeout(() => {
-    if (active.value) {
+    if (timerStore.active) {
       timerStore.levelTimer -= 1
     }
     if (timerStore.levelTimer <= 0) {
-      console.log('next level!!')
       timerStore.levelTimer = 0
+
+      playAudio()
       timerStore.incrementLevel()
     } else {
       countDownTimer()
@@ -45,8 +47,14 @@ function countDownTimer() {
   }, 1000)
 }
 
-function toggle() {
-  active.value = !active.value
+//TODO cut audio accordingly to avoid issues and stop pausing it
+// TODO allow to configure audio
+function playAudio() {
+  audio.play()
+  setTimeout(() => {
+    audio.pause();
+    audio.currentTime = 0; // Reset to the start
+  }, 1000);
 }
 
 function calculateLevelSeconds() {
@@ -75,7 +83,7 @@ countDownTimer()
     <div class="controls">
       <div class="previous" @click="timerStore.reduceLevel">‹</div>
       <div class="previous" @click="timerStore.reduceSeconds(60)">-1</div>
-      <div class="toggle" @click="toggle()">{{ toggleIcon }}</div>
+      <div class="toggle" @click="timerStore.toggle()">{{ toggleIcon }}</div>
       <div class="previous" @click="timerStore.addSeconds(60)">+1</div>
       <div class="next" @click="timerStore.incrementLevel">›</div>
     </div>

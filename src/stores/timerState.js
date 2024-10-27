@@ -9,6 +9,7 @@ export const useTimerStore = defineStore({
     state: () => ({
         levelIndex: useLocalStorage('vue-poker-timer-level-index', 0),
         levelTimer: 0,
+        active: false
     }),
     actions: {
         reduceLevel() {
@@ -29,6 +30,9 @@ export const useTimerStore = defineStore({
         },
         reduceSeconds(seconds) {
             this.levelTimer -= seconds
+        },
+        toggle(){
+            this.active = !this.active
         },
         resetStore() {
             this.levelIndex = 0

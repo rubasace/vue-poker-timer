@@ -18,7 +18,6 @@ const addLevel = () => {
 };
 
 const guessBigBlind = () => {
-  console.log(tournamentInfoStore.lastLevel)
   if (tournamentInfoStore.levels.length === 0) {
     return 100;
   }
@@ -69,7 +68,6 @@ const onCellEditComplete = (event) => {
 };
 
 const deleteLevel = (rowData) => {
-  // console.log(JSON.stringify(rowData))
   //TODO investigate why it doesn't seem to delete the desired one when not logging
   const index = tournamentInfoStore.levels.findIndex(level => level.id === rowData.id);
   if (index !== -1) {
