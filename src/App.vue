@@ -94,6 +94,7 @@ onBeforeUnmount(() => {
         <BlindsInfo text="Next Level" :value="nextBlinds"/>
       </div>
       <div class="break" v-else>
+        <BlindsInfo text="Next Level" :value="nextBlinds"/>
         <span>BREAK</span>
       </div>
     </div>
@@ -186,10 +187,11 @@ main
       text-align: center
 
     .break
-      font-size: 2.8em
       width: 100%
-      color: $secondary-color
       text-align: center
+      span
+        color: $secondary-color
+        font-size: 2.8em
 
 .primary, :deep(.primary)
   color: $primary-color
