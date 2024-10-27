@@ -1,20 +1,19 @@
 <script setup>
 
-import {computed, ref, watch} from "vue";
+import {computed, onUnmounted, ref, watch} from "vue";
 import {useTimerStore} from "@/stores/timerState.js";
 import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
+import {formatClockValue} from "@/util/formatUtils.js";
 
 const timerStore = useTimerStore();
 const tournamentInfoStore = useTournamentInfoStore();
 
-const countDown = ref(getLevelTime())
 const active = ref(true)
 
+timerStore.levelTimer = calculateLevelSeconds()
 
 const clockValue = computed(() => {
-  const minutes = Math.floor(countDown.value / 60)
-  const seconds = countDown.value - minutes * 60
-  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+  return formatClockValue(timerStore.levelTimer)
 })
 
 const toggleIcon = computed(() => {
@@ -34,11 +33,11 @@ let timer = null;
 function countDownTimer() {
   timer = setTimeout(() => {
     if (active.value) {
-      countDown.value -= 1
+      timerStore.levelTimer -= 1
     }
-    if (countDown.value <= 0) {
+    if (timerStore.levelTimer <= 0) {
       console.log('next level!!')
-      countDown.value = 0
+      timerStore.levelTimer = 0
       timerStore.incrementLevel()
     } else {
       countDownTimer()
@@ -50,16 +49,23 @@ function toggle() {
   active.value = !active.value
 }
 
-function getLevelTime() {
+function calculateLevelSeconds() {
   return 60 * (tournamentInfoStore.currentLevel?.minutes ?? 0)
 }
 
 watch(levelIndex, () => {
   clearTimeout(timer)
-  countDown.value = getLevelTime()
+  timerStore.levelTimer = calculateLevelSeconds()
   countDownTimer()
 })
 
+onUnmounted(() => {
+  clearTimeout(timer)
+})
+
+if(timer){
+  clearTimeout(timer)
+}
 countDownTimer()
 
 </script>
@@ -68,9 +74,9 @@ countDownTimer()
     <div class="value">{{ clockValue }}</div>
     <div class="controls">
       <div class="previous" @click="timerStore.reduceLevel">‹</div>
-      <div class="previous" @click="countDown -= 60">-1</div>
+      <div class="previous" @click="timerStore.reduceSeconds(60)">-1</div>
       <div class="toggle" @click="toggle()">{{ toggleIcon }}</div>
-      <div class="previous" @click="countDown += 60">+1</div>
+      <div class="previous" @click="timerStore.addSeconds(60)">+1</div>
       <div class="next" @click="timerStore.incrementLevel">›</div>
     </div>
   </div>

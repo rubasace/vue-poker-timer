@@ -8,25 +8,25 @@ import Dialog from "primevue/dialog";
 import {useEntriesStore} from "@/stores/playerActions";
 import {useTimerStore} from "@/stores/timerState.js";
 import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
+import {formatClockValue} from "@/util/formatUtils.js";
 
 const entriesStore = useEntriesStore();
 const timerStore = useTimerStore();
 const tournamentInfoStore = useTournamentInfoStore();
 
-
-const breaks = ref(['15/6', '15/12', '15/18', '15/24', '15/30']);
 const showDialog = ref(false);
 
 
 const currentBlinds = computed(() => tournamentInfoStore.currentLevel ? `${tournamentInfoStore.currentLevel.smallBlind}/${tournamentInfoStore.currentLevel.bigBlind}/${tournamentInfoStore.currentLevel.ante}`: '0/0/0');
-const smallBlind = computed(() => currentBlinds.value.split('/')[0]);
-const bigBlind = computed(() => currentBlinds.value.split('/')[1]);
-const ante = computed(() => currentBlinds.value.split('/')[2]);
+const smallBlind = computed(() => normalizeBetAmount(currentBlinds.value.split('/')[0], tournamentInfoStore.currentLevel.bigBlind));
+const bigBlind = computed(() => normalizeBetAmount(currentBlinds.value.split('/')[1]));
+const ante = computed(() => normalizeBetAmount(currentBlinds.value.split('/')[2]));
+
 const nextBlinds = computed(() => {
   if(!tournamentInfoStore.nextLevel){
     return 'NONE';
   }
-  return `${tournamentInfoStore.nextLevel.smallBlind}/${tournamentInfoStore.nextLevel.bigBlind}/${tournamentInfoStore.nextLevel.ante}`;
+  return `${normalizeBetAmount(tournamentInfoStore.nextLevel.smallBlind, tournamentInfoStore.nextLevel.bigBlind)} / ${normalizeBetAmount(tournamentInfoStore.nextLevel.bigBlind)}(${normalizeBetAmount(tournamentInfoStore.nextLevel.ante)})`;
 });
 const totalStack = computed(() => {
   return tournamentInfoStore.initialStack * (entriesStore.entries + entriesStore.reentries) + entriesStore.addons * tournamentInfoStore.addonStack;
@@ -48,6 +48,31 @@ const avgStack = computed(() => {
   if (avg >= 100000) return (avg / 1000).toFixed(1) + "K";
   return avg;
 });
+
+const nextBreak = computed(() => {
+  if(!tournamentInfoStore.nextLevelSecondsUntilBreak){
+    return 'NONE';
+  }
+  return formatClockValue(tournamentInfoStore.nextLevelSecondsUntilBreak)
+});
+
+const normalizeBetAmount = (amount, bigBlind) => {
+  const value = parseFloat(amount);
+  const bigBlindValue = bigBlind ? parseFloat(bigBlind) : parseFloat(value);
+  if(bigBlindValue > 5000 && value > 1000){
+    if(value % 1000 === 0){
+      return (value / 1000).toFixed(0) + "K";
+    }
+    return (value / 1000).toFixed(1) + "K";
+  }
+  if(value > 1000000){
+    if(value % 1000000 === 0){
+      return (value / 1000000).toFixed(0) + "M";
+    }
+    return (value / 1000000).toFixed(1) + "M";
+  }
+  return value
+};
 
 // Cursor reset logic
 let cursorTimer;
@@ -102,6 +127,7 @@ onBeforeUnmount(() => {
       <TitleValue title="Players" :value="entriesStore.remainingPlayers + '/' + entriesStore.entries"/>
       <TitleValue title="Level" :value="timerStore.levelIndex + 1"/>
       <TitleValue title="Avg Stack" :value="avgStack.toLocaleString()"/>
+      <TitleValue title="Next Break" :value="nextBreak"/>
     </div>
   </main>
   <Dialog class="dialog" v-model:visible="showDialog" modal header="Settings" style="width: 85%;max-width: 1000px;height: 100%">
