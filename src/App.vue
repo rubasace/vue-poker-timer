@@ -101,7 +101,7 @@ onBeforeUnmount(() => {
   <main @mousemove="resetCursorTimer">
     <div class="aside left-panel">
       <TitleValue title="Prize pool" :value="totalPrizePool+tournamentInfoStore.currency.symbol"/>
-      <TitleValue title="Payouts" value=""/>
+<!--      <TitleValue title="" value=""/>-->
       <TitleValue title="Reentries" :value="entriesStore.reentries"/>
       <TitleValue title="Addons" :value="entriesStore.addons"/>
     </div>
