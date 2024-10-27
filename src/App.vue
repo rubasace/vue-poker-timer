@@ -38,7 +38,7 @@ const totalPrizePool = computed(() => {
       entriesStore.reentries * tournamentInfoStore.reentryFee +
       entriesStore.addons * tournamentInfoStore.addonFee +
       tournamentInfoStore.addedPrize
-  );
+  ).toLocaleString();
 });
 const avgStack = computed(() => {
   if (entriesStore.remainingPlayers === 0) {
@@ -103,8 +103,8 @@ onBeforeUnmount(() => {
     <div class="aside left-panel">
       <TitleValue title="Prize pool" :value="totalPrizePool+tournamentInfoStore.currency.symbol"/>
 <!--      <TitleValue title="" value=""/>-->
-      <TitleValue title="Reentries" :value="entriesStore.reentries"/>
-      <TitleValue title="Addons" :value="entriesStore.addons"/>
+      <TitleValue title="Reentries" :value="entriesStore.reentries.toLocaleString()"/>
+      <TitleValue title="Addons" :value="entriesStore.addons.toLocaleString()"/>
     </div>
     <div class="central-panel">
       <div class="header">
@@ -125,7 +125,7 @@ onBeforeUnmount(() => {
       </div>
     </div>
     <div class="aside right-panel">
-      <TitleValue title="Players" :value="entriesStore.remainingPlayers + '/' + entriesStore.entries"/>
+      <TitleValue title="Players" :value="entriesStore.remainingPlayers.toLocaleString() + '/' + entriesStore.entries.toLocaleString()"/>
       <TitleValue title="Level" :value="timerStore.levelIndex + 1"/>
       <TitleValue title="Avg Stack" :value="avgStack.toLocaleString()"/>
       <TitleValue title="Next Break" :value="nextBreak"/>
