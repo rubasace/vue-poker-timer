@@ -8,11 +8,11 @@ const tournamentInfoStore = useTournamentInfoStore();
 const addonEnabled = ref(true)
 
 const currencies = [
-  { name: 'Euro', code: 'EUR', symbol: '€' },
-  { name: 'US Dollar', code: 'USD', symbol: '$' },
-  { name: 'British Pound', code: 'GBP', symbol: '£' },
-  { name: 'Japanese Yen', code: 'JPY', symbol: '¥' },
-  { name: 'Australian Dollar', code: 'AUD', symbol: '$' },
+  {name: 'Euro', code: 'EUR', symbol: '€'},
+  {name: 'US Dollar', code: 'USD', symbol: '$'},
+  {name: 'British Pound', code: 'GBP', symbol: '£'},
+  {name: 'Japanese Yen', code: 'JPY', symbol: '¥'},
+  {name: 'Australian Dollar', code: 'AUD', symbol: '$'},
 ];
 </script>
 
@@ -21,12 +21,12 @@ const currencies = [
     <div class="section-title">General Info</div>
     <div class="p-field">
       <label for="tournamentSeries">Tournament Series*</label>
-      <InputText v-model="tournamentInfoStore.tournamentSeries" id="tournamentSeries" />
+      <InputText v-model="tournamentInfoStore.tournamentSeries" id="tournamentSeries"/>
     </div>
 
     <div class="p-field">
       <label for="tournamentName">Tournament Name</label>
-      <InputText v-model="tournamentInfoStore.tournamentName" id="tournamentName" />
+      <InputText v-model="tournamentInfoStore.tournamentName" id="tournamentName"/>
     </div>
 
     <div class="p-field">
@@ -41,25 +41,33 @@ const currencies = [
       />
     </div>
 
+    <div class="section-title">Prizes</div>
+
+    <div class="p-field">
+      <label for="guaranteedPrize">Guaranteed Prize</label>
+      <InputNumber v-model="tournamentInfoStore.guaranteedPrize" id="guaranteedPrize" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency"/>
+    </div>
+
+    <div class="p-field">
+      <label for="addedPrize">Added Prize</label>
+      <InputNumber v-model="tournamentInfoStore.addedPrize" id="addedPrize" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency"/>
+    </div>
+
+    <div class="section-title">Buy-In Info</div>
+
     <div class="p-field">
       <label for="entryFee">Entry Fee*</label>
-      <InputNumber v-model="tournamentInfoStore.entryFee" id="entryFee" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency" />
+      <InputNumber v-model="tournamentInfoStore.entryFee" id="entryFee" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency"/>
+    </div>
+
+    <div class="p-field">
+      <label for="entryFee">Entry Rake*</label>
+      <InputNumber v-model="tournamentInfoStore.entryRake" id="entryRake" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency"/>
     </div>
 
     <div class="p-field">
       <label for="initialStack">Initial Stack*</label>
-      <InputNumber v-model="tournamentInfoStore.initialStack" id="initialStack" :min="0" />
-    </div>
-
-    <div class="section-title">Prizes</div>
-    <div class="p-field">
-      <label for="addedPrize">Added Prize</label>
-      <InputNumber v-model="tournamentInfoStore.addedPrize" id="addedPrize" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency" />
-    </div>
-
-    <div class="p-field">
-      <label for="guaranteedPrize">Guaranteed Prize</label>
-      <InputNumber v-model="tournamentInfoStore.guaranteedPrize" id="guaranteedPrize" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency" />
+      <InputNumber v-model="tournamentInfoStore.initialStack" id="initialStack" :min="0"/>
     </div>
 
     <div class="section-title">Addon</div>
@@ -73,15 +81,20 @@ const currencies = [
       <Checkbox v-model="tournamentInfoStore.doubleAddonEnabled" id="addonEnabled" :disabled="!tournamentInfoStore.addonEnabled" binary/>
     </div>
 
-      <div class="p-field" v-if="tournamentInfoStore.addonEnabled">
-        <label for="addonFee">Addon Fee</label>
-        <InputNumber v-model="tournamentInfoStore.addonFee" id="addonFee" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency" />
-      </div>
+    <div class="p-field" v-if="tournamentInfoStore.addonEnabled">
+      <label for="addonFee">Addon Fee</label>
+      <InputNumber v-model="tournamentInfoStore.addonFee" id="addonFee" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency"/>
+    </div>
 
-      <div class="p-field" v-if="tournamentInfoStore.addonEnabled">
-        <label for="addonStack">Addon Stack</label>
-        <InputNumber v-model="tournamentInfoStore.addonStack" id="addonStack" :min="0" />
-      </div>
+    <div class="p-field" v-if="tournamentInfoStore.addonEnabled">
+      <label for="addonFee">Addon Rake</label>
+      <InputNumber v-model="tournamentInfoStore.addonRake" id="addonRake" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency"/>
+    </div>
+
+    <div class="p-field" v-if="tournamentInfoStore.addonEnabled">
+      <label for="addonStack">Addon Stack</label>
+      <InputNumber v-model="tournamentInfoStore.addonStack" id="addonStack" :min="0"/>
+    </div>
 
     <div class="section-title">Reentry</div>
     <div class="p-field">
@@ -90,15 +103,20 @@ const currencies = [
     </div>
     <div/>
 
-      <div class="p-field" v-if="tournamentInfoStore.reentryEnabled">
-        <label for="reentryFee">Reentry Fee</label>
-        <InputNumber v-model="tournamentInfoStore.reentryFee" id="reentryFee" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency" />
-      </div>
+    <div class="p-field" v-if="tournamentInfoStore.reentryEnabled">
+      <label for="reentryFee">Reentry Fee</label>
+      <InputNumber v-model="tournamentInfoStore.reentryFee" id="reentryFee" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency"/>
+    </div>
 
-      <div class="p-field" v-if="tournamentInfoStore.reentryEnabled">
-        <label for="maxReentries">Max Reentries</label>
-        <InputNumber v-model="tournamentInfoStore.maxReentries" id="maxReentries" :min="0" />
-      </div>
+    <div class="p-field" v-if="tournamentInfoStore.reentryEnabled">
+      <label for="reentryFee">Reentry Rake</label>
+      <InputNumber v-model="tournamentInfoStore.reentryRake" id="reentryFee" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency"/>
+    </div>
+
+    <div class="p-field" v-if="tournamentInfoStore.reentryEnabled">
+      <label for="maxReentries">Max Reentries</label>
+      <InputNumber v-model="tournamentInfoStore.maxReentries" id="maxReentries" :min="0"/>
+    </div>
   </div>
 
   <div class="structure">
