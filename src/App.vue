@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import BlindsInfo from "@/components/BlindsInfo.vue";
 import Clock from "@/components/Clock.vue";
 import TitleValue from "@/components/TitleValue.vue";
@@ -10,8 +10,10 @@ import {useTimerStore} from "@/stores/timerState.js";
 import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
 import {formatClockValue} from "@/util/formatUtils.js";
 import {useConfirm} from "primevue/useconfirm";
+import { useMouse } from '@vueuse/core'
 
 const confirm = useConfirm();
+const { x, y } = useMouse()
 
 
 const entriesStore = useEntriesStore();
@@ -19,6 +21,8 @@ const timerStore = useTimerStore();
 const tournamentInfoStore = useTournamentInfoStore();
 
 const showDialog = ref(false);
+const showSettingsBar = ref(true); // Reactive variable to control the settings bar visibility
+
 
 
 const currentBlinds = computed(() => tournamentInfoStore.currentLevel ? `${tournamentInfoStore.currentLevel.smallBlind}/${tournamentInfoStore.currentLevel.bigBlind}/${tournamentInfoStore.currentLevel.ante}` : '0/0/0');
@@ -96,8 +100,12 @@ let cursorTimer;
 function resetCursorTimer() {
   clearTimeout(cursorTimer);
   document.body.style.cursor = "unset";
+  showSettingsBar.value = true;
   cursorTimer = setTimeout(() => {
-    if (!showDialog.value) document.body.style.cursor = "none";
+    if (!showDialog.value) {
+      document.body.style.cursor = "none";
+    }
+    showSettingsBar.value = false;
   }, 5000);
 }
 
@@ -129,23 +137,27 @@ function checkForOldData() {
   }
 }
 
+watch([x,y], () => {
+  resetCursorTimer();
+})
+
 // Lifecycle hooks
 onMounted(() => {
-  resetCursorTimer();
-  document.body.addEventListener("mousemove", resetCursorTimer);
   checkForOldData()
 });
 
 onBeforeUnmount(() => {
   clearTimeout(cursorTimer);
-  document.body.removeEventListener("mousemove", resetCursorTimer);
 });
 
 </script>
 
 
 <template>
-  <main @mousemove="resetCursorTimer">
+  <main>
+    <div class="settings-bar" v-if="showSettingsBar">
+      <i class="pi pi-cog settings-button" @click="showDialog = true"/>
+    </div>
     <div class="aside left-panel">
       <TitleValue title="Prize pool" :value="totalPrizePool+tournamentInfoStore.currency.symbol"/>
       <!--      <TitleValue title="" value=""/>-->
@@ -177,7 +189,6 @@ onBeforeUnmount(() => {
       <TitleValue :title="nextBreakTitle" :value="nextBreak"/>
     </div>
   </main>
-  <i class="pi pi-cog settings-button" @click="showDialog = true"/>
   <Dialog class="dialog" v-model:visible="showDialog" modal header="Settings" style="width: 85%;max-width: 1000px;height: 100%">
     <Configuration/>
   </Dialog>
@@ -199,6 +210,21 @@ main
   text-transform: uppercase
   font-size: 2rem
   font-weight: bold
+
+  .settings-bar
+    position: fixed
+    top: 0
+    width: 100%
+    height: 3em
+    .settings-button
+      position: absolute
+      top: 25px
+      right: 50px
+      font-size: 1.3em
+
+      &:hover
+        cursor: pointer
+        color: $primary-color
 
   .aside
     padding: 0
@@ -273,16 +299,6 @@ main
 
 .secondary, :deep(.secondary)
   color: $secondary-color
-
-.settings-button
-  position: absolute
-  top: 25px
-  right: 25px
-  font-size: 2em
-
-  &:hover
-    cursor: pointer
-    color: $primary-color
 
 //margin-top: 140px
 @media (max-width: 1024px)
