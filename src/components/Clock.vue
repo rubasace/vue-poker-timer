@@ -4,12 +4,12 @@ import {computed, onUnmounted, ref, watch} from "vue";
 import {useTimerStore} from "@/stores/timerState.js";
 import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
 import {formatClockValue} from "@/util/formatUtils.js";
-import beepSound from "@/assets/700-hz-beeps-86815.mp3";
+import newLevelSound from "@/assets/sounds/nuevo_cambio_de_nivel.wav";
 
 const timerStore = useTimerStore();
 const tournamentInfoStore = useTournamentInfoStore();
 
-const audio = new Audio(beepSound);
+const audio = new Audio(newLevelSound);
 
 timerStore.levelTimer = calculateLevelSeconds()
 
@@ -52,10 +52,6 @@ function countDownTimer() {
 //TODO improve clock controls
 function playAudio() {
   audio.play()
-  setTimeout(() => {
-    audio.pause();
-    audio.currentTime = 0; // Reset to the start
-  }, 1000);
 }
 
 function calculateLevelSeconds() {
