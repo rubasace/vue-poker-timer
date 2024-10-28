@@ -1,22 +1,22 @@
 <script setup>
 
 import EntriesConfiguration from "@/components/configuration/EntriesConfiguration.vue";
-import TournamentStructureConfiguration from "@/components/configuration/TournamentStructureConfiguration.vue";
+import TournamentDetailsConfiguration from "@/components/configuration/TournamentDetailsConfiguration.vue";
 </script>
 <template>
 
   <div class="card">
     <Tabs value="0">
       <TabList>
-        <Tab value="0">Entries</Tab>
-        <Tab value="1">Structure</Tab>
+        <Tab value="0">Tournament Details</Tab>
+        <Tab value="1">Live Actions</Tab>
       </TabList>
       <TabPanels>
         <TabPanel value="0">
-          <EntriesConfiguration/>
+          <TournamentDetailsConfiguration/>
         </TabPanel>
         <TabPanel value="1">
-          <TournamentStructureConfiguration/>
+          <EntriesConfiguration/>
         </TabPanel>
       </TabPanels>
     </Tabs>

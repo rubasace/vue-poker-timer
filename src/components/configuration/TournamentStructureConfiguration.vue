@@ -1,94 +1,148 @@
 <script setup>
+
 import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
-import LevelsTable from "@/components/configuration/LevelsTable.vue";
 
 const tournamentInfoStore = useTournamentInfoStore();
 
-  const currencies = [
-    { name: 'Euro', code: 'EUR', symbol: '€' },
-    { name: 'US Dollar', code: 'USD', symbol: '$' },
-    { name: 'British Pound', code: 'GBP', symbol: '£' },
-    { name: 'Japanese Yen', code: 'JPY', symbol: '¥' },
-    { name: 'Australian Dollar', code: 'AUD', symbol: '$' },
-  ];
+
+const addLevel = () => {
+  const bigBlind = guessBigBlind();
+  tournamentInfoStore.levels.push({
+    id: Date.now(), // Unique ID for tracking in DataTable
+    smallBlind: Math.max(100, bigBlind / 2),
+    bigBlind: bigBlind,
+    ante: bigBlind,
+    minutes: guessMinutes(),
+  });
+
+};
+
+const guessBigBlind = () => {
+  if (tournamentInfoStore.levels.length === 0) {
+    return 100;
+  }
+  const lastBigBlind = tournamentInfoStore.lastLevel.bigBlind;
+
+  if (lastBigBlind < 600) {
+    return lastBigBlind + 100;
+  }
+  if (lastBigBlind < 2000) {
+    return lastBigBlind + 200;
+  }
+  if (lastBigBlind < 3000) {
+    return lastBigBlind + 500
+  }
+
+  if (lastBigBlind < 6000) {
+    return lastBigBlind + 1000
+  }
+  if (lastBigBlind < 10000) {
+    return lastBigBlind + 2000
+  }
+  if (lastBigBlind < 40000) {
+    return lastBigBlind + 5000
+  }
+  return lastBigBlind + 10000
+}
+
+const guessMinutes = () => {
+  if (tournamentInfoStore.levels.length === 0) {
+    return 30;
+  } else {
+    return tournamentInfoStore.lastLevel.minutes;
+  }
+}
+
+const addBreak = () => {
+  tournamentInfoStore.levels.push({
+    id: Date.now(), // Unique ID for tracking in DataTable
+    minutes: 20,
+    break: true
+  });
+};
+
+const onCellEditComplete = (event) => {
+  let {data, newValue, field} = event;
+
+  data[field] = newValue;
+};
+
+const deleteLevel = (rowData) => {
+  //TODO investigate why it doesn't seem to delete the desired one when not logging
+  const index = tournamentInfoStore.levels.findIndex(level => level.id === rowData.id);
+  if (index !== -1) {
+    tournamentInfoStore.levels.splice(index, 1);
+  }
+};
+
+const reorderLevels = (event) => {
+  tournamentInfoStore.levels = event.value;
+};
 
 </script>
 
 <template>
-  <div class="p-field">
-    <label for="tournamentSeries">Tournament Series</label>
-    <InputText v-model="tournamentInfoStore.tournamentSeries" id="tournamentSeries"/>
+  <DataTable :value="tournamentInfoStore.levels"
+             @cell-edit-complete="onCellEditComplete"
+             @rowReorder="reorderLevels"
+             editMode="cell"
+             showGridlines stripedRows
+             :reorderableColumns="true"
+             dataKey="id">
+    <template #header>
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <span class="table-title">Blinds Structure</span>
+      </div>
+    </template>
+    <Column rowReorder headerStyle="width: 3rem" :reorderableColumn="false"/>
+    <Column field="smallBlind" header="Small Blind" editor="true">
+      <template #editor="{ data }">
+        <InputNumber v-model="data.smallBlind" min="0"/>
+      </template>
+    </Column>
+    <Column field="bigBlind" header="Big Blind" editor="true">
+      <template #editor="{ data }">
+        <InputNumber v-model="data.bigBlind" min="0"/>
+      </template>
+    </Column>
+
+    <Column field="ante" header="Ante" editor="true">
+      <template #editor="{ data }">
+        <InputNumber v-model="data.ante" min="0"/>
+      </template>
+    </Column>
+
+    <Column field="minutes" header="Duration (min)" editor="true">
+      <template #editor="{ data }">
+        <InputNumber v-model="data.minutes" min="0"/>
+      </template>
+    </Column>
+
+    <Column field="break" header="Break?"/>
+
+    <Column class="w-24 !text-end">
+      <template #body="{ data }">
+        <Button icon="pi pi-trash" @click="deleteLevel(data)" severity="secondary" rounded/>
+      </template>
+    </Column>
+  </DataTable>
+
+  <div class="tableActions">
+    <Button label="Add Level" icon="pi pi-plus" @click="addLevel" class="action"/>
+    <Button label="Add break" severity="secondary" icon="pi pi-plus" @click="addBreak" class="action"/>
   </div>
-
-  <div class="p-field">
-    <label for="tournamentName">Tournament Name</label>
-    <InputText v-model="tournamentInfoStore.tournamentName" id="tournamentName"/>
-  </div>
-
-  <div class="p-field">
-    <label for="currency">Currency</label>
-    <Select
-        filter
-        v-model="tournamentInfoStore.currency"
-        id="currency"
-        :options="currencies"
-        option-label="name"
-        placeholder="Select a currency"
-    />
-  </div>
-
-  <div class="p-field">
-    <label for="initialStack">Initial Stack</label>
-    <InputNumber v-model="tournamentInfoStore.initialStack" id="initialStack" :min="0"/>
-  </div>
-
-  <div class="p-field">
-    <label for="addonStack">Addon Stack</label>
-    <InputNumber v-model="tournamentInfoStore.addonStack" id="addonStack" :min="0"/>
-  </div>
-
-  <div class="p-field">
-    <label for="entryFee">Entry Fee</label>
-    <InputNumber v-model="tournamentInfoStore.entryFee" id="entryFee" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency"/>
-  </div>
-
-  <div class="p-field">
-    <label for="reentryFee">Reentry Fee</label>
-    <InputNumber v-model="tournamentInfoStore.reentryFee" id="reentryFee" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency"/>
-  </div>
-
-  <div class="p-field">
-    <label for="addonFee">Addon Fee</label>
-    <InputNumber v-model="tournamentInfoStore.addonFee" id="addonFee" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency"/>
-  </div>
-
-  <div class="p-field">
-    <label for="addedPrize">Added Prize</label>
-    <InputNumber v-model="tournamentInfoStore.addedPrize" id="addedPrize" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency"/>
-  </div>
-
-  <LevelsTable/>
-
-<!--  TODO allow to cancel/save by binding to intermediary in-memory model -->
-<!--  <div class="actions">-->
-<!--    <Button label="Save" @click="saveConfiguration" class="button p-button-success"/>-->
-<!--    <Button label="Save" @click="saveConfiguration" class="button p-button-success"/>-->
-<!--  </div>-->
 </template>
 
 <style scoped lang="sass">
-.p-field
-  margin-bottom: 1em
-  display: grid
-  grid-template-columns: 1fr 3fr
-  grid-column-gap: 1em
-.actions
-  position: absolute
-  bottom: 0
-  right: 0
-  margin: 2em
-  .button
-    font-size: 1.2em
-    margin-left: 1em
+.table-title
+  font-size: 1.2em
+  font-weight: bold
+  text-align: center
+  width: 100%
 
+.tableActions
+  margin-top: 1.3em
+.action
+  margin-right: 1em
+  font-size: 0.9em
 </style>

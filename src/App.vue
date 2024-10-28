@@ -29,22 +29,27 @@ const nextBlinds = computed(() => {
   }
   return `${normalizeBetAmount(tournamentInfoStore.nextLevel.smallBlind, tournamentInfoStore.nextLevel.bigBlind)} / ${normalizeBetAmount(tournamentInfoStore.nextLevel.bigBlind)}(${normalizeBetAmount(tournamentInfoStore.nextLevel.ante)})`;
 });
-const totalStack = computed(() => {
-  return tournamentInfoStore.initialStack * (entriesStore.entries + entriesStore.reentries) + entriesStore.addons * tournamentInfoStore.addonStack;
+const totalChipsInGame = computed(() => {
+  return tournamentInfoStore.initialStack * (entriesStore.entries + entriesStore.reentries) + entriesStore.addons * tournamentInfoStore.addonStack + entriesStore.doubleAddons * tournamentInfoStore.addonStack * 2;
 });
+//TODO support fee substraction (200+20 for example)
 const totalPrizePool = computed(() => {
-  return (
+  const collectedPrizePool =
       entriesStore.entries * tournamentInfoStore.entryFee +
       entriesStore.reentries * tournamentInfoStore.reentryFee +
       entriesStore.addons * tournamentInfoStore.addonFee +
-      tournamentInfoStore.addedPrize
+      entriesStore.doubleAddons * tournamentInfoStore.addonFee * 2 +
+      tournamentInfoStore.addedPrize;
+  return Math.max(
+      collectedPrizePool,
+      tournamentInfoStore.guaranteedPrize
   ).toLocaleString();
 });
 const avgStack = computed(() => {
   if (entriesStore.remainingPlayers === 0) {
     return 0;
   }
-  let avg = Math.round(totalStack.value / entriesStore.remainingPlayers);
+  let avg = Math.round(totalChipsInGame.value / entriesStore.remainingPlayers);
   if (avg >= 1000000) return (avg / 1000000).toFixed(1) + "M";
   if (avg >= 100000) return (avg / 1000).toFixed(1) + "K";
   return avg;

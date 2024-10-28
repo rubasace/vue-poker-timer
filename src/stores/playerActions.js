@@ -7,7 +7,8 @@ export const useEntriesStore = defineStore({
         remainingPlayers: useLocalStorage('vue-poker-timer-remaining-players', 0),
         entries: useLocalStorage('vue-poker-timer-entries', 0),
         reentries: useLocalStorage('vue-poker-timer-reentries', 0),
-        addons: useLocalStorage('vue-poker-timer-addons', 0)
+        addons: useLocalStorage('vue-poker-timer-addons', 0),
+        doubleAddons: useLocalStorage('vue-poker-timer-addons', 0)
     }),
     actions: {
         registerPlayer() {
@@ -39,9 +40,17 @@ export const useEntriesStore = defineStore({
         addAddon() {
             this.addons++
         },
+        addDoubleAddon() {
+            this.doubleAddons++
+        },
         removeAddon() {
             if (this.addons > 0) {
                 this.addons--
+            }
+        },
+        removeDoubleAddon() {
+            if (this.doubleAddons > 0) {
+                this.doubleAddons--
             }
         },
         eliminatePlayer() {

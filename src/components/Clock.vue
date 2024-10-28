@@ -49,6 +49,7 @@ function countDownTimer() {
 
 //TODO cut audio accordingly to avoid issues and stop pausing it
 // TODO allow to configure audio
+//TODO improve clock controls
 function playAudio() {
   audio.play()
   setTimeout(() => {

@@ -8,12 +8,17 @@ export const useTournamentInfoStore = defineStore({
         tournamentSeries: useLocalStorage('vue-poker-timer-tournament-series', 'Marcosfa Poker Tour'),
         tournamentName: useLocalStorage('vue-poker-timer-tournament-name', '#2'),
         currency: useLocalStorage('vue-poker-timer-currency', {name: 'Euro', code: 'EUR', symbol: '€'}),
-        initialStack: useLocalStorage('vue-poker-timer-initial-stack', 25000),
-        addonStack: useLocalStorage('vue-poker-timer-addon-stack', 10000),
         entryFee: useLocalStorage('vue-poker-timer-entry-fee', 0),
-        reentryFee: useLocalStorage('vue-poker-timer-reentry-fee', 5),
+        initialStack: useLocalStorage('vue-poker-timer-initial-stack', 25000),
+        addonEnabled: useLocalStorage('vue-poker-timer-addon-enabled', true),
+        doubleAddonEnabled: useLocalStorage('vue-poker-timer-double-addon-enabled', false),
         addonFee: useLocalStorage('vue-poker-timer-addon-fee', 5),
-        addedPrize: useLocalStorage('vue-poker-timer-added-prize', 20),
+        addonStack: useLocalStorage('vue-poker-timer-addon-stack', 10000),
+        reentryEnabled: useLocalStorage('vue-poker-timer-reentry-enabled', true),
+        reentryFee: useLocalStorage('vue-poker-timer-reentry-fee', 5),
+        maxReentries: useLocalStorage('vue-poker-timer-max-reentries', 0),
+        addedPrize: useLocalStorage('vue-poker-timer-added-prize', 0),
+        guaranteedPrize: useLocalStorage('vue-poker-timer-guaranteed-prize', 20),
         levels: useLocalStorage('vue-poker-timer-levels', [
             {id: 1, smallBlind: 100, bigBlind: 100, ante: 100, minutes: 20},
             {id: 2, smallBlind: 100, bigBlind: 200, ante: 200, minutes: 20},
@@ -44,6 +49,9 @@ export const useTournamentInfoStore = defineStore({
                 last = state.levels[state.levels.length - 2]
             }
             return last
+        },
+        allowsDoubleAddon: (state) => {
+            return state.addonEnabled && state.doubleAddonEnabled
         },
         nextLevelSecondsUntilBreak: (state) => {
             let totalMinutes = 0;

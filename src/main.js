@@ -1,5 +1,6 @@
 import './assets/main.css'
 import 'primeicons/primeicons.css'
+import 'primeflex/primeflex.css'
 
 
 import { createApp } from 'vue'
@@ -22,6 +23,7 @@ import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Checkbox from 'primevue/checkbox';
+import Card from 'primevue/card';
 
 
 const app = createApp(App)
@@ -39,11 +41,13 @@ app.component('Button', Button);
 app.component('DataTable', DataTable);
 app.component('Column', Column);
 app.component('Checkbox', Checkbox);
+app.component('Card', Card);
 
 app.use(PrimeVue, {
     theme: {
         preset: Aura,
         options: {
+            prefix: 'p',
             darkModeSelector: 'none',
         }
     }
