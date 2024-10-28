@@ -59,7 +59,14 @@ const nextBreak = computed(() => {
   if(!tournamentInfoStore.nextLevelSecondsUntilBreak){
     return 'NONE';
   }
-  return formatClockValue(tournamentInfoStore.nextLevelSecondsUntilBreak)
+  return formatClockValue(tournamentInfoStore.nextLevelSecondsUntilBreak);
+});
+
+const nextBreakTitle = computed(() => {
+  if(!tournamentInfoStore.nextLevelSecondsUntilBreak){
+    return 'Next Break';
+  }
+  return `Next Break (${tournamentInfoStore.nextBreak.minutes}′)`;
 });
 
 const normalizeBetAmount = (amount, bigBlind) => {
@@ -133,7 +140,7 @@ onBeforeUnmount(() => {
       <TitleValue title="Players" :value="entriesStore.remainingPlayers.toLocaleString() + '/' + entriesStore.entries.toLocaleString()"/>
       <TitleValue title="Level" :value="timerStore.levelIndex + 1"/>
       <TitleValue title="Avg Stack" :value="avgStack.toLocaleString()"/>
-      <TitleValue title="Next Break" :value="nextBreak"/>
+      <TitleValue :title="nextBreakTitle" :value="nextBreak"/>
     </div>
   </main>
   <Dialog class="dialog" v-model:visible="showDialog" modal header="Settings" style="width: 85%;max-width: 1000px;height: 100%">

@@ -66,6 +66,18 @@ export const useTournamentInfoStore = defineStore({
                 return 0;
             }
             return totalMinutes * 60 + useTimerStore().levelTimer;
+        },
+        nextBreak: (state) => {
+            let i = 1;
+            let nextLevel = state.levels[useTimerStore().levelIndex + 1];
+            while (nextLevel && !nextLevel?.break) {
+                i++;
+                nextLevel = state.levels[useTimerStore().levelIndex + i];
+            }
+            if (!nextLevel?.break) {
+                return undefined;
+            }
+            return nextLevel;
         }
     }
 
