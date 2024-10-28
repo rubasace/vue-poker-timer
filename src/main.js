@@ -24,6 +24,10 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Checkbox from 'primevue/checkbox';
 import Card from 'primevue/card';
+import ConfirmDialog from 'primevue/confirmdialog';
+
+
+import ConfirmationService from 'primevue/confirmationservice';
 
 
 const app = createApp(App)
@@ -42,6 +46,7 @@ app.component('DataTable', DataTable);
 app.component('Column', Column);
 app.component('Checkbox', Checkbox);
 app.component('Card', Card);
+app.component('ConfirmDialog', ConfirmDialog);
 
 app.use(PrimeVue, {
     theme: {
@@ -53,6 +58,8 @@ app.use(PrimeVue, {
     }
 });
 
+
+app.use(ConfirmationService);
 app.use(createPinia())
 
 app.mount('#app')

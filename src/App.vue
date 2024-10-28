@@ -1,5 +1,5 @@
 <script setup>
-import {computed, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref} from "vue";
 import BlindsInfo from "@/components/BlindsInfo.vue";
 import Clock from "@/components/Clock.vue";
 import TitleValue from "@/components/TitleValue.vue";
@@ -9,6 +9,9 @@ import {useEntriesStore} from "@/stores/playerActions";
 import {useTimerStore} from "@/stores/timerState.js";
 import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
 import {formatClockValue} from "@/util/formatUtils.js";
+import {useConfirm} from "primevue/useconfirm";
+
+const confirm = useConfirm();
 
 
 const entriesStore = useEntriesStore();
@@ -18,13 +21,13 @@ const tournamentInfoStore = useTournamentInfoStore();
 const showDialog = ref(false);
 
 
-const currentBlinds = computed(() => tournamentInfoStore.currentLevel ? `${tournamentInfoStore.currentLevel.smallBlind}/${tournamentInfoStore.currentLevel.bigBlind}/${tournamentInfoStore.currentLevel.ante}`: '0/0/0');
+const currentBlinds = computed(() => tournamentInfoStore.currentLevel ? `${tournamentInfoStore.currentLevel.smallBlind}/${tournamentInfoStore.currentLevel.bigBlind}/${tournamentInfoStore.currentLevel.ante}` : '0/0/0');
 const smallBlind = computed(() => normalizeBetAmount(currentBlinds.value.split('/')[0], tournamentInfoStore.currentLevel.bigBlind));
 const bigBlind = computed(() => normalizeBetAmount(currentBlinds.value.split('/')[1]));
 const ante = computed(() => normalizeBetAmount(currentBlinds.value.split('/')[2]));
 
 const nextBlinds = computed(() => {
-  if(!tournamentInfoStore.nextLevel){
+  if (!tournamentInfoStore.nextLevel) {
     return 'NONE';
   }
   return `${normalizeBetAmount(tournamentInfoStore.nextLevel.smallBlind, tournamentInfoStore.nextLevel.bigBlind)} / ${normalizeBetAmount(tournamentInfoStore.nextLevel.bigBlind)}(${normalizeBetAmount(tournamentInfoStore.nextLevel.ante)})`;
@@ -32,7 +35,6 @@ const nextBlinds = computed(() => {
 const totalChipsInGame = computed(() => {
   return tournamentInfoStore.initialStack * (entriesStore.entries + entriesStore.reentries) + entriesStore.addons * tournamentInfoStore.addonStack + entriesStore.doubleAddons * tournamentInfoStore.addonStack * 2;
 });
-//TODO support fee substraction (200+20 for example)
 const totalPrizePool = computed(() => {
   const collectedPrizePool =
       entriesStore.entries * tournamentInfoStore.entryFee +
@@ -45,6 +47,7 @@ const totalPrizePool = computed(() => {
       tournamentInfoStore.guaranteedPrize
   ).toLocaleString();
 });
+
 const avgStack = computed(() => {
   if (entriesStore.remainingPlayers === 0) {
     return 0;
@@ -56,14 +59,14 @@ const avgStack = computed(() => {
 });
 
 const nextBreak = computed(() => {
-  if(!tournamentInfoStore.nextLevelSecondsUntilBreak){
+  if (!tournamentInfoStore.nextLevelSecondsUntilBreak) {
     return 'NONE';
   }
   return formatClockValue(tournamentInfoStore.nextLevelSecondsUntilBreak);
 });
 
 const nextBreakTitle = computed(() => {
-  if(!tournamentInfoStore.nextLevelSecondsUntilBreak){
+  if (!tournamentInfoStore.nextLevelSecondsUntilBreak) {
     return 'Next Break';
   }
   return `Next Break (${tournamentInfoStore.nextBreak.minutes}′)`;
@@ -72,14 +75,14 @@ const nextBreakTitle = computed(() => {
 const normalizeBetAmount = (amount, bigBlind) => {
   const value = parseFloat(amount);
   const bigBlindValue = bigBlind ? parseFloat(bigBlind) : parseFloat(value);
-  if(bigBlindValue > 5000 && value > 1000){
-    if(value % 1000 === 0){
+  if (bigBlindValue > 5000 && value > 1000) {
+    if (value % 1000 === 0) {
       return (value / 1000).toFixed(0) + "K";
     }
     return (value / 1000).toFixed(1) + "K";
   }
-  if(value > 1000000){
-    if(value % 1000000 === 0){
+  if (value > 1000000) {
+    if (value % 1000000 === 0) {
       return (value / 1000000).toFixed(0) + "M";
     }
     return (value / 1000000).toFixed(1) + "M";
@@ -89,6 +92,7 @@ const normalizeBetAmount = (amount, bigBlind) => {
 
 // Cursor reset logic
 let cursorTimer;
+
 function resetCursorTimer() {
   clearTimeout(cursorTimer);
   document.body.style.cursor = "unset";
@@ -97,16 +101,46 @@ function resetCursorTimer() {
   }, 5000);
 }
 
+function checkForOldData() {
+  if(!timerStore.tournamentStartTime){
+    return;
+  }
+  const extraMarginHours = 3;
+  const maxTournamentDuration = (tournamentInfoStore.estimatedDurationHours + extraMarginHours) * 60 * 60 * 1000;
+  const isOlderThanTournamentDuration = (Date.now() - timerStore.tournamentStartTime) > maxTournamentDuration
+  if (isOlderThanTournamentDuration) {
+    confirm.require({
+      message: 'Data from an existing tournament state has been found. It might be an old tournament no longer valid, do you want to clear it?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      rejectProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true
+      },
+      accept: () => {
+        entriesStore.resetStore()
+        timerStore.resetStore()
+      },
+      reject: () => {
+        timerStore.setStartTime()
+      }
+    });
+  }
+}
+
 // Lifecycle hooks
 onMounted(() => {
   resetCursorTimer();
   document.body.addEventListener("mousemove", resetCursorTimer);
+  checkForOldData()
 });
 
 onBeforeUnmount(() => {
   clearTimeout(cursorTimer);
   document.body.removeEventListener("mousemove", resetCursorTimer);
 });
+
 </script>
 
 
@@ -114,7 +148,7 @@ onBeforeUnmount(() => {
   <main @mousemove="resetCursorTimer">
     <div class="aside left-panel">
       <TitleValue title="Prize pool" :value="totalPrizePool+tournamentInfoStore.currency.symbol"/>
-<!--      <TitleValue title="" value=""/>-->
+      <!--      <TitleValue title="" value=""/>-->
       <TitleValue title="Reentries" :value="entriesStore.reentries.toLocaleString()"/>
       <TitleValue title="Addons" :value="entriesStore.addons.toLocaleString()"/>
     </div>
@@ -143,10 +177,11 @@ onBeforeUnmount(() => {
       <TitleValue :title="nextBreakTitle" :value="nextBreak"/>
     </div>
   </main>
+  <i class="pi pi-cog settings-button" @click="showDialog = true"/>
   <Dialog class="dialog" v-model:visible="showDialog" modal header="Settings" style="width: 85%;max-width: 1000px;height: 100%">
     <Configuration/>
   </Dialog>
-  <i class="pi pi-cog settings-button" @click="showDialog = true"/>
+  <ConfirmDialog/>
 </template>
 
 <style lang="sass" scoped>
@@ -228,6 +263,7 @@ main
     .break
       width: 100%
       text-align: center
+
       span
         color: $secondary-color
         font-size: 2.8em
@@ -243,6 +279,7 @@ main
   top: 25px
   right: 25px
   font-size: 2em
+
   &:hover
     cursor: pointer
     color: $primary-color

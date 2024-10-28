@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import {useLocalStorage} from '@vueuse/core'
-import {nextTick, ref} from "vue";
+import {nextTick,} from "vue";
 import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
 
 
@@ -9,6 +9,7 @@ export const useTimerStore = defineStore({
     state: () => ({
         levelIndex: useLocalStorage('vue-poker-timer-level-index', 0),
         levelTimer: 0,
+        tournamentStartTime: useLocalStorage('vue-poker-timer-tournament-start-time', null),
         active: false
     }),
     actions: {
@@ -33,9 +34,16 @@ export const useTimerStore = defineStore({
         },
         toggle(){
             this.active = !this.active
+            if(this.active && !this.tournamentStartTime) {
+                this.tournamentStartTime = Date.now()
+            }
+        },
+        setStartTime(){
+            this.tournamentStartTime = Date.now()
         },
         resetStore() {
             this.levelIndex = 0
+            this.tournamentStartTime = null
         }
     }
 })
