@@ -132,6 +132,7 @@ const reorderLevels = (event) => {
   <div class="tableActions">
     <Button label="Add Level" icon="pi pi-plus" @click="addLevel" class="action"/>
     <Button label="Add break" severity="secondary" icon="pi pi-plus" @click="addBreak" class="action"/>
+    <Button label="Clear All" severity="danger" icon="pi pi-trash" @click="tournamentInfoStore.levels = []" class="action clear"/>
   </div>
 </template>
 
@@ -147,4 +148,7 @@ const reorderLevels = (event) => {
 .action
   margin-right: 1em
   font-size: 0.9em
+  //TODO revisit float, prob not right
+  &.clear
+    float: right
 </style>
