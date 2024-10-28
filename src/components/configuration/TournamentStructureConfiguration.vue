@@ -67,6 +67,8 @@ const onCellEditComplete = (event) => {
   data[field] = newValue;
 };
 
+//TODO show level number
+//TODO show clear all button
 const deleteLevel = (rowData) => {
   //TODO investigate why it doesn't seem to delete the desired one when not logging
   const index = tournamentInfoStore.levels.findIndex(level => level.id === rowData.id);

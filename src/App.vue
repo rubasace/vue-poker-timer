@@ -10,10 +10,10 @@ import {useTimerStore} from "@/stores/timerState.js";
 import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
 import {formatClockValue} from "@/util/formatUtils.js";
 import {useConfirm} from "primevue/useconfirm";
-import { useMouse } from '@vueuse/core'
+import {useMouse} from '@vueuse/core'
 
 const confirm = useConfirm();
-const { x, y } = useMouse()
+const {x, y} = useMouse()
 
 
 const entriesStore = useEntriesStore();
@@ -23,10 +23,10 @@ const tournamentInfoStore = useTournamentInfoStore();
 const showDialog = ref(false);
 const showSettingsBar = ref(true); // Reactive variable to control the settings bar visibility
 
-
+//TODO show minutes of next level
 
 const currentBlinds = computed(() => tournamentInfoStore.currentLevel ? `${tournamentInfoStore.currentLevel.smallBlind}/${tournamentInfoStore.currentLevel.bigBlind}/${tournamentInfoStore.currentLevel.ante}` : '0/0/0');
-const smallBlind = computed(() => normalizeBetAmount(currentBlinds.value.split('/')[0], tournamentInfoStore.currentLevel.bigBlind));
+const smallBlind = computed(() => normalizeBetAmount(currentBlinds.value.split('/')[0], tournamentInfoStore.currentLevel?.bigBlind));
 const bigBlind = computed(() => normalizeBetAmount(currentBlinds.value.split('/')[1]));
 const ante = computed(() => normalizeBetAmount(currentBlinds.value.split('/')[2]));
 
@@ -34,17 +34,17 @@ const nextBlinds = computed(() => {
   if (!tournamentInfoStore.nextLevel) {
     return 'NONE';
   }
-  return `${normalizeBetAmount(tournamentInfoStore.nextLevel.smallBlind, tournamentInfoStore.nextLevel.bigBlind)} / ${normalizeBetAmount(tournamentInfoStore.nextLevel.bigBlind)}(${normalizeBetAmount(tournamentInfoStore.nextLevel.ante)})`;
+  return `${normalizeBetAmount(tournamentInfoStore.nextLevel.smallBlind, tournamentInfoStore.nextLevel.bigBlind)} / ${normalizeBetAmount(tournamentInfoStore.nextLevel.bigBlind)} (${normalizeBetAmount(tournamentInfoStore.nextLevel.ante)})`;
 });
 const totalChipsInGame = computed(() => {
   return tournamentInfoStore.initialStack * (entriesStore.entries + entriesStore.reentries) + entriesStore.addons * tournamentInfoStore.addonStack + entriesStore.doubleAddons * tournamentInfoStore.addonStack * 2;
 });
 const totalPrizePool = computed(() => {
   const collectedPrizePool =
-      entriesStore.entries * tournamentInfoStore.entryFee +
-      entriesStore.reentries * tournamentInfoStore.reentryFee +
-      entriesStore.addons * tournamentInfoStore.addonFee +
-      entriesStore.doubleAddons * tournamentInfoStore.addonFee * 2 +
+      (entriesStore.entries * tournamentInfoStore.entryFee) +
+      (entriesStore.reentries * tournamentInfoStore.reentryFee) +
+      (entriesStore.addons * tournamentInfoStore.addonFee) +
+      (entriesStore.doubleAddons * tournamentInfoStore.addonFee * 2) +
       tournamentInfoStore.addedPrize;
   return Math.max(
       collectedPrizePool,
@@ -110,7 +110,7 @@ function resetCursorTimer() {
 }
 
 function checkForOldData() {
-  if(!timerStore.tournamentStartTime){
+  if (!timerStore.tournamentStartTime) {
     return;
   }
   const extraMarginHours = 3;
@@ -137,7 +137,7 @@ function checkForOldData() {
   }
 }
 
-watch([x,y], () => {
+watch([x, y], () => {
   resetCursorTimer();
 })
 
@@ -172,7 +172,7 @@ onBeforeUnmount(() => {
       <div class="timer">
         <Clock class="clock" ref="clock"/>
       </div>
-      <div class="current-level" v-if="!tournamentInfoStore.currentLevel.break">
+      <div class="current-level" v-if="!tournamentInfoStore.currentLevel?.break">
         <BlindsInfo text="blinds" :value="`${smallBlind}/${bigBlind}`"/>
         <BlindsInfo text="ante" :value="ante"/>
         <BlindsInfo text="Next Level" :value="nextBlinds"/>
@@ -216,6 +216,7 @@ main
     top: 0
     width: 100%
     height: 3em
+
     .settings-button
       position: absolute
       top: 25px
