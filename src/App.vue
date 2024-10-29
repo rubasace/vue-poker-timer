@@ -308,7 +308,6 @@ main
   font-size: 1.7rem
   .central-panel
     min-width: 300px
-    max-width: 700px
 
 @media (max-width: 1440px)
   main
