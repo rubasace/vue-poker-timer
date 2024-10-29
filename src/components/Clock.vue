@@ -4,8 +4,10 @@ import {computed, watch} from "vue";
 import {useTimerStore} from "@/stores/timerState.js";
 import {formatClockValue} from "@/util/formatUtils.js";
 import newLevelSound from "@/assets/sounds/nuevo_cambio_de_nivel.wav";
+import {useLeaderStore} from "@/stores/leaderState.js";
 
 const timerStore = useTimerStore();
+const leaderStore = useLeaderStore()
 
 const newLevelAudio = new Audio(newLevelSound);
 
@@ -26,7 +28,7 @@ const levelTimer = computed(() => {
 })
 
 watch(levelTimer, (newVal) => {
-  if (newVal === 1) {
+  if (newVal === 1 && leaderStore.isLeaderTab) {
     newLevelAudio.play()
   }
 })
