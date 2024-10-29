@@ -210,7 +210,7 @@ main
   grid-template-columns: 2fr 3.8fr 2fr
   grid-column-gap: 0
   text-transform: uppercase
-  font-size: 2rem
+  font-size: 2.2em
   font-family: 'Chivo Mono Variable', monospace
 
   .settings-bar
@@ -235,22 +235,17 @@ main
     flex-direction: column
     align-items: center
     justify-content: space-around
-    font-size: 1.2em
+    font-size: 1em
 
   .central-panel
-    font-size: 1.3em
+    font-size: 2em
     display: grid
     grid-template-rows: 1fr 3fr 2fr
-    min-width: 420px
-    max-width: 1000px
-
     .header
       text-align: center
-      font-size: 0.85em
-      line-height: 1.4em
-
+      line-height: 1.2em
       .tournament
-        font-size: 2em
+        font-size: 1.7em
 
     .timer
       position: relative
@@ -262,7 +257,6 @@ main
       align-items: center
       justify-content: center
       text-transform: uppercase
-      font-size: 1em
 
       $border: 4px solid $primary-color
       $separation: -0.3em
@@ -281,11 +275,9 @@ main
         border-right: $border
 
       .clock
-        font-size: 3em
-        height: 30%
-
+        font-size: 4em
     .current-level
-      font-size: 1.5em
+      font-size: 1.2em
       width: 100%
       text-align: center
 
@@ -303,24 +295,19 @@ main
 .secondary, :deep(.secondary)
   color: $secondary-color
 
-@media (max-width: 1920px)
-main
-  font-size: 1.7rem
-  .central-panel
-    min-width: 300px
+@media (max-width: 1900px)
+  main
+    font-size: 1.5em
 
 @media (max-width: 1440px)
   main
-    font-size: 1.2rem
-    .central-panel
-      min-width: 200px
+    font-size: 1.3em
 
-@media (min-width: 1920px)
-  main
-    font-size: 1.75rem
 
-    .central-panel
-      font-size: 1.6em
+@media (orientation: portrait)
+  @media (max-width: 700px)
+    main
+      font-size: 0.45em
 
 
 </style>
