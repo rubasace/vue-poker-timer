@@ -24,6 +24,9 @@ const props = defineProps<{
   //font-weight: bolder
   text-transform: uppercase
 
+  .text
+    font-weight: 500
+
   .value
     font-size: 2.5em
     font-weight: 600
