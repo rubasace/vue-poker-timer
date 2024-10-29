@@ -1,17 +1,13 @@
 <script setup>
 
-import {computed, onUnmounted, ref, watch} from "vue";
+import {computed, watch} from "vue";
 import {useTimerStore} from "@/stores/timerState.js";
-import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
 import {formatClockValue} from "@/util/formatUtils.js";
 import newLevelSound from "@/assets/sounds/nuevo_cambio_de_nivel.wav";
 
 const timerStore = useTimerStore();
-const tournamentInfoStore = useTournamentInfoStore();
 
-const audio = new Audio(newLevelSound);
-
-timerStore.levelTimer = calculateLevelSeconds()
+const newLevelAudio = new Audio(newLevelSound);
 
 const clockValue = computed(() => {
   return formatClockValue(timerStore.levelTimer)
@@ -25,53 +21,15 @@ const toggleIcon = computed(() => {
   }
 })
 
-const levelIndex = computed(() => {
-  return timerStore.levelIndex
+const levelTimer = computed(() => {
+  return timerStore.levelTimer
 })
 
-let timer = null;
-
-function countDownTimer() {
-  timer = setTimeout(() => {
-    if (timerStore.active) {
-      timerStore.levelTimer -= 1
-    }
-    if (timerStore.levelTimer <= 0) {
-      timerStore.levelTimer = 0
-
-      playAudio()
-      timerStore.incrementLevel()
-    } else {
-      countDownTimer()
-    }
-  }, 1000)
-}
-
-//TODO cut audio accordingly to avoid issues and stop pausing it
-// TODO allow to configure audio
-//TODO improve clock controls
-function playAudio() {
-  audio.play()
-}
-
-function calculateLevelSeconds() {
-  return 60 * (tournamentInfoStore.currentLevel?.minutes ?? 0)
-}
-
-watch(levelIndex, () => {
-  clearTimeout(timer)
-  timerStore.levelTimer = calculateLevelSeconds()
-  countDownTimer()
+watch(levelTimer, (newVal) => {
+  if (newVal === 1) {
+    newLevelAudio.play()
+  }
 })
-
-onUnmounted(() => {
-  clearTimeout(timer)
-})
-
-if(timer){
-  clearTimeout(timer)
-}
-countDownTimer()
 
 </script>
 <template>

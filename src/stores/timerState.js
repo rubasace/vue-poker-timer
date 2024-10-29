@@ -1,49 +1,108 @@
 import {defineStore} from 'pinia'
 import {useLocalStorage} from '@vueuse/core'
-import {nextTick,} from "vue";
-import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
+import {nextTick, onBeforeUnmount, onMounted, watch} from 'vue'
+import {useTournamentInfoStore} from "@/stores/tournamentInfo.js"
+import {useLeaderStore} from "@/stores/leaderState.js";
+
+export const useTimerStore = defineStore('timerState', () => {
+    const levelIndex = useLocalStorage('vue-poker-timer-level-index', 0)
+    const levelTimer = useLocalStorage('vue-poker-timer-level-timer', 0)
+    const tournamentStartTime = useLocalStorage('vue-poker-timer-tournament-start-time', null)
+    const active = useLocalStorage('vue-poker-timer-tournament-start-time', false)
 
 
-export const useTimerStore = defineStore({
-    id: 'timerState',
-    state: () => ({
-        levelIndex: useLocalStorage('vue-poker-timer-level-index', 0),
-        levelTimer: 0,
-        tournamentStartTime: useLocalStorage('vue-poker-timer-tournament-start-time', null),
-        active: false
-    }),
-    actions: {
-        reduceLevel() {
-            this.levelIndex--;
-            //Done like this so when reducing first level it restarts it instead of ignoring it
-            if (this.levelIndex < 0) {
-                nextTick(() => (this.levelIndex = 0));
+    let timer = null
+
+    const leaderStore = useLeaderStore()
+    const runCountDownTimer = () => {
+
+        timer = setTimeout(() => {
+            if (leaderStore.isLeaderTab) {
+                if (active.value) {
+                    levelTimer.value -= 1
+                }
+                if (levelTimer.value < 0) {
+                    levelTimer.value = 0
+                    nextTick(() => incrementLevel())
+                }
+                runCountDownTimer()
+            } else {
+                runCountDownTimer()
             }
-        },
-        incrementLevel() {
-            if (this.levelIndex >= useTournamentInfoStore().levels.length - 1) {
-                return
-            }
-            this.levelIndex++;
-        },
-        addSeconds(seconds) {
-            this.levelTimer += seconds
-        },
-        reduceSeconds(seconds) {
-            this.levelTimer -= seconds
-        },
-        toggle(){
-            this.active = !this.active
-            if(this.active && !this.tournamentStartTime) {
-                this.tournamentStartTime = Date.now()
-            }
-        },
-        setStartTime(){
-            this.tournamentStartTime = Date.now()
-        },
-        resetStore() {
-            this.levelIndex = 0
-            this.tournamentStartTime = null
+
+        }, 1000)
+    }
+
+
+    const reduceLevel = () => {
+        levelIndex.value--
+        if (levelIndex.value < 0) {
+            nextTick(() => (levelIndex.value = 0))
         }
+    }
+
+    const incrementLevel = () => {
+        const tournamentInfoStore = useTournamentInfoStore()
+        if (levelIndex.value >= tournamentInfoStore.levels.length - 1) {
+            return
+        }
+        levelIndex.value++
+    }
+
+    const addSeconds = (seconds) => {
+        levelTimer.value += seconds
+    }
+
+    const reduceSeconds = (seconds) => {
+        levelTimer.value -= seconds
+    }
+
+    const stopCountDownTimer = () => {
+        clearTimeout(timer)
+    }
+
+    const toggle = () => {
+        active.value = !active.value
+        if (active.value) {
+            if (!tournamentStartTime.value) {
+                tournamentStartTime.value = Date.now()
+            }
+        }
+    }
+
+    function calculateLevelSeconds() {
+        return 60 * (useTournamentInfoStore().currentLevel?.minutes ?? 0)
+    }
+
+    const resetStore = () => {
+        levelIndex.value = 0
+        levelTimer.value = 0
+        tournamentStartTime.value = null
+        active.value = false
+    }
+
+    watch(levelIndex, () => {
+        levelTimer.value = calculateLevelSeconds()
+    })
+
+    onMounted(() => {
+        runCountDownTimer()
+    })
+
+    onBeforeUnmount(() => {
+        stopCountDownTimer()
+    })
+
+    return {
+        levelIndex,
+        levelTimer,
+        tournamentStartTime,
+        active,
+        reduceLevel,
+        incrementLevel,
+        addSeconds,
+        reduceSeconds,
+        toggle,
+        resetStore
     }
 })

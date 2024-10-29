@@ -1,4 +1,7 @@
 export function formatClockValue(timeInSeconds) {
+    if (timeInSeconds < 0) {
+        return '00:00';
+    }
     const hours = Math.floor(timeInSeconds / 3600);
     const minutes = Math.floor(timeInSeconds / 60) - hours * 60;
     const seconds = timeInSeconds - hours * 3600 - minutes * 60;
