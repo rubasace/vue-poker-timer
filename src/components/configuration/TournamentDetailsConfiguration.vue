@@ -5,8 +5,6 @@ import {ref} from "vue";
 
 const tournamentInfoStore = useTournamentInfoStore();
 
-const addonEnabled = ref(true)
-
 const currencies = [
   {name: 'Euro', code: 'EUR', symbol: '€'},
   {name: 'US Dollar', code: 'USD', symbol: '$'},
@@ -14,9 +12,65 @@ const currencies = [
   {name: 'Japanese Yen', code: 'JPY', symbol: '¥'},
   {name: 'Australian Dollar', code: 'AUD', symbol: '$'},
 ];
+
+const fileInput = ref(null);
+
+
+function exportTournamentDetails() {
+  const tournamentDetails = {
+    tournamentInfo: {
+      ...tournamentInfoStore.$state
+    }
+  }
+  const json = JSON.stringify(tournamentDetails, null, 2)
+  const blob = new Blob([json], {type: 'application/json'})
+  const url = URL.createObjectURL(blob)
+
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'tournament-details.json'
+  a.click()
+
+  URL.revokeObjectURL(url)
+}
+
+function importTournamentDetails(event) {
+  const file = event.files[0];
+  if (file) {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const fileContent = e.target.result;
+      const data = JSON.parse(fileContent);
+      tournamentInfoStore.$patch(data?.tournamentInfo);
+    };
+
+    reader.onerror = (error) => {
+      console.error("Error reading file:", error);
+    };
+
+    reader.readAsText(file);
+  }
+}
+
+function openFilePicker() {
+  fileInput.value.choose()
+}
 </script>
 
 <template>
+
+  <FileUpload
+      ref="fileInput"
+      mode="basic"
+      @select="importTournamentDetails"
+      customUpload
+      auto
+      accept="application/json"
+      style="display: none"
+  />
+  <Button label="Import" icon="pi pi-upload" severity="primary" @click="openFilePicker" class="action" raised/>
+  <Button label="Export" icon="pi pi-download" severity="info" @click="exportTournamentDetails" class="action" raised/>
   <div class="form-container">
     <div class="section-title">General Info</div>
     <div class="p-field">
@@ -84,12 +138,14 @@ const currencies = [
 
     <div class="p-field">
       <label for="reentryFee">Reentry Fee</label>
-      <InputNumber v-model="tournamentInfoStore.reentryFee" id="reentryFee" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency" :disabled="!tournamentInfoStore.reentryEnabled"/>
+      <InputNumber v-model="tournamentInfoStore.reentryFee" id="reentryFee" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency"
+                   :disabled="!tournamentInfoStore.reentryEnabled"/>
     </div>
 
     <div class="p-field">
       <label for="reentryFee">Reentry Rake</label>
-      <InputNumber v-model="tournamentInfoStore.reentryRake" id="reentryRake" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency" :disabled="!tournamentInfoStore.reentryEnabled"/>
+      <InputNumber v-model="tournamentInfoStore.reentryRake" id="reentryRake" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency"
+                   :disabled="!tournamentInfoStore.reentryEnabled"/>
     </div>
 
     <div class="p-field">
@@ -110,12 +166,14 @@ const currencies = [
 
     <div class="p-field">
       <label for="addonFee">Addon Fee</label>
-      <InputNumber v-model="tournamentInfoStore.addonFee" id="addonFee" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency" :disabled="!tournamentInfoStore.addonEnabled"/>
+      <InputNumber v-model="tournamentInfoStore.addonFee" id="addonFee" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency"
+                   :disabled="!tournamentInfoStore.addonEnabled"/>
     </div>
 
     <div class="p-field">
       <label for="addonFee">Addon Rake</label>
-      <InputNumber v-model="tournamentInfoStore.addonRake" id="addonRake" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency" :disabled="!tournamentInfoStore.addonEnabled"/>
+      <InputNumber v-model="tournamentInfoStore.addonRake" id="addonRake" :min="0" :currency="tournamentInfoStore.currency?.code" mode="currency"
+                   :disabled="!tournamentInfoStore.addonEnabled"/>
     </div>
 
     <div class="p-field">
@@ -148,4 +206,8 @@ const currencies = [
 
 .structure
   margin-top: 2em
+
+.action
+  margin-left: 1em
+  float: right
 </style>

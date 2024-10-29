@@ -25,6 +25,8 @@ import Column from 'primevue/column';
 import Checkbox from 'primevue/checkbox';
 import Card from 'primevue/card';
 import ConfirmDialog from 'primevue/confirmdialog';
+import FileUpload from 'primevue/fileupload';
+
 
 
 import ConfirmationService from 'primevue/confirmationservice';
@@ -47,6 +49,7 @@ app.component('Column', Column);
 app.component('Checkbox', Checkbox);
 app.component('Card', Card);
 app.component('ConfirmDialog', ConfirmDialog);
+app.component('FileUpload', FileUpload);
 
 app.use(PrimeVue, {
     theme: {

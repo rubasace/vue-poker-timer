@@ -8,6 +8,7 @@ const confirm = useConfirm();
 const entriesStore = useEntriesStore();
 const tournamentInfoStore = useTournamentInfoStore();
 
+
 function resetEntries() {
   confirm.require({
     message: 'This will clear all registered actions on the tournament. Do you want to proceed?',
@@ -48,7 +49,7 @@ function resetEntries() {
       <Button label="Remove Double Addon" icon="pi pi-arrow-down" @click="entriesStore.removeDoubleAddon()" severity="secondary" icon-pos="top" iconClass="action-icon" rounded raised outlined :disabled="!tournamentInfoStore.doubleAddonEnabled"/>
     </div>
     <div class="danger section">
-      <Button label="Restart Tournament" icon="pi pi-times" @click="resetEntries()" severity="danger"/>
+      <Button label="Restart Tournament" icon="pi pi-history" @click="resetEntries()" severity="danger"/>
     </div>
   </div>
   <ConfirmDialog/>

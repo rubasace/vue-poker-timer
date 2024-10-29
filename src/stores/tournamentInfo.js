@@ -24,15 +24,15 @@ export const useTournamentInfoStore = defineStore('tournamentInfo', () => {
     const guaranteedPrize = useLocalStorage('vue-poker-timer-guaranteed-prize', 20);
     const estimatedDurationHours = useLocalStorage('vue-poker-timer-estimated-duration', 8);
     const levels = useLocalStorage('vue-poker-timer-levels', [
-        { id: 1, smallBlind: 100, bigBlind: 100, ante: 100, minutes: 20 },
-        { id: 2, smallBlind: 100, bigBlind: 200, ante: 200, minutes: 20 },
-        { id: 3, smallBlind: 100, bigBlind: 300, ante: 300, minutes: 20 },
-        { id: 4, smallBlind: 200, bigBlind: 400, ante: 400, minutes: 20 },
-        { id: 5, smallBlind: 200, bigBlind: 500, ante: 500, minutes: 20 },
-        { id: 6, smallBlind: 300, bigBlind: 600, ante: 600, minutes: 20 },
-        { id: 7, break: true, minutes: 20 },
-        { id: 8, smallBlind: 400, bigBlind: 800, ante: 800, minutes: 20 },
-        { id: 9, smallBlind: 500, bigBlind: 1000, ante: 1000, minutes: 20 },
+        { id: Date.now(), smallBlind: 100, bigBlind: 100, ante: 100, minutes: 20 },
+        { id: Date.now(), smallBlind: 100, bigBlind: 200, ante: 200, minutes: 20 },
+        { id: Date.now(), smallBlind: 100, bigBlind: 300, ante: 300, minutes: 20 },
+        { id: Date.now(), smallBlind: 200, bigBlind: 400, ante: 400, minutes: 20 },
+        { id: Date.now(), smallBlind: 200, bigBlind: 500, ante: 500, minutes: 20 },
+        { id: Date.now(), smallBlind: 300, bigBlind: 600, ante: 600, minutes: 20 },
+        { id: Date.now(), break: true, minutes: 20 },
+        { id: Date.now(), smallBlind: 400, bigBlind: 800, ante: 800, minutes: 20 },
+        { id: Date.now(), smallBlind: 500, bigBlind: 1000, ante: 1000, minutes: 20 },
     ]);
 
     // Timer store

@@ -8,7 +8,7 @@ const tournamentInfoStore = useTournamentInfoStore();
 const addLevel = () => {
   const bigBlind = guessBigBlind();
   tournamentInfoStore.levels.push({
-    id: Date.now(), // Unique ID for tracking in DataTable
+    id: Date.now(),
     smallBlind: Math.max(100, bigBlind / 2),
     bigBlind: bigBlind,
     ante: bigBlind,
@@ -99,24 +99,24 @@ const reorderLevels = (event) => {
     <Column rowReorder headerStyle="width: 3rem" :reorderableColumn="false"/>
     <Column field="smallBlind" header="Small Blind" editor="true">
       <template #editor="{ data }">
-        <InputNumber v-model="data.smallBlind" min="0"/>
+        <InputNumber v-model="data.smallBlind" :min="0"/>
       </template>
     </Column>
     <Column field="bigBlind" header="Big Blind" editor="true">
       <template #editor="{ data }">
-        <InputNumber v-model="data.bigBlind" min="0"/>
+        <InputNumber v-model="data.bigBlind" :min="0"/>
       </template>
     </Column>
 
     <Column field="ante" header="Ante" editor="true">
       <template #editor="{ data }">
-        <InputNumber v-model="data.ante" min="0"/>
+        <InputNumber v-model="data.ante" :min="0"/>
       </template>
     </Column>
 
     <Column field="minutes" header="Duration (min)" editor="true">
       <template #editor="{ data }">
-        <InputNumber v-model="data.minutes" min="0"/>
+        <InputNumber v-model="data.minutes" :min="0"/>
       </template>
     </Column>
 
