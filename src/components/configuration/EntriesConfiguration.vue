@@ -52,7 +52,6 @@ function resetEntries() {
       <Button label="Restart Tournament" icon="pi pi-history" @click="resetEntries()" severity="danger"/>
     </div>
   </div>
-  <ConfirmDialog/>
 </template>
 
 <style scoped lang="sass">
