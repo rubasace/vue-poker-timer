@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource-variable/azeret-mono": "^5.1.0",
+    "@fontsource-variable/chivo-mono": "^5.1.0",
+    "@fontsource/source-sans-pro": "^5.1.0",
     "@primevue/themes": "^4.1.1",
     "@vueuse/core": "^11.1.0",
     "pinia": "^2.1.7",

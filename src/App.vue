@@ -36,7 +36,7 @@ const nextBlinds = computed(() => {
   if (!tournamentInfoStore.nextLevel) {
     return 'NONE';
   }
-  return `${normalizeBetAmount(tournamentInfoStore.nextLevel.smallBlind, tournamentInfoStore.nextLevel.bigBlind)} / ${normalizeBetAmount(tournamentInfoStore.nextLevel.bigBlind)} (${normalizeBetAmount(tournamentInfoStore.nextLevel.ante)})`;
+  return `${normalizeBetAmount(tournamentInfoStore.nextLevel.smallBlind, tournamentInfoStore.nextLevel.bigBlind)}/${normalizeBetAmount(tournamentInfoStore.nextLevel.bigBlind)} (${normalizeBetAmount(tournamentInfoStore.nextLevel.ante)})`;
 });
 const totalChipsInGame = computed(() => {
   return tournamentInfoStore.initialStack * (entriesStore.entries + entriesStore.reentries) + entriesStore.addons * tournamentInfoStore.addonStack + entriesStore.doubleAddons * tournamentInfoStore.addonStack * 2;
@@ -211,7 +211,7 @@ main
   grid-column-gap: 0
   text-transform: uppercase
   font-size: 2rem
-  font-weight: bold
+  font-family: 'Chivo Mono Variable', monospace
 
   .settings-bar
     position: fixed
@@ -235,7 +235,7 @@ main
     flex-direction: column
     align-items: center
     justify-content: space-around
-    font-size: 1em
+    font-size: 1.2em
 
   .central-panel
     font-size: 1.3em
@@ -303,20 +303,25 @@ main
 .secondary, :deep(.secondary)
   color: $secondary-color
 
-//margin-top: 140px
-@media (max-width: 1024px)
-  main
-    font-size: 1rem
+@media (max-width: 1920px)
+main
+  font-size: 1.7rem
+  .central-panel
+    min-width: 300px
+    max-width: 700px
 
+@media (max-width: 1440px)
+  main
+    font-size: 1.2rem
     .central-panel
       min-width: 200px
 
-@media (min-width: 1440px)
+@media (min-width: 1920px)
   main
-    font-size: 2.3rem
+    font-size: 1.75rem
 
     .central-panel
-      font-size: 1.8em
+      font-size: 1.6em
 
 
 </style>

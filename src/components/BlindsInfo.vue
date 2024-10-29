@@ -25,7 +25,7 @@ const blindValues = computed(() => {
 
 <style scoped lang="sass">
 .blinds-info
-  font-weight: bolder
+  //font-weight: bolder
   .info-line
     display: flex
     font-size: 0.6em

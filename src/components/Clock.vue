@@ -65,6 +65,10 @@ $highlight-color: #04479c
     align-items: center
     justify-content: center
 
+  .value
+    font-weight: 800
+    font-size: 1.3em
+
     div
       display: inline-block
       padding: 0.1em 0.3em

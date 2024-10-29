@@ -21,10 +21,11 @@ const props = defineProps<{
   flex-direction: column
   align-items: center
   justify-content: center
-  font-weight: bolder
+  //font-weight: bolder
   text-transform: uppercase
 
   .value
-    font-size: 2.2em
+    font-size: 2.5em
+    font-weight: 600
 
 </style>
