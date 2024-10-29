@@ -28,7 +28,8 @@ function exportTournamentDetails() {
 
   const a = document.createElement('a')
   a.href = url
-  a.download = 'tournament-details.json'
+  const prefix = tournamentInfoStore.tournamentSeries? `${tournamentInfoStore.tournamentSeries}-` : ''
+  a.download = `${prefix}${tournamentInfoStore.tournamentName}-tournament-details.json`.replace(/ /g, '_')
   a.click()
 
   URL.revokeObjectURL(url)
