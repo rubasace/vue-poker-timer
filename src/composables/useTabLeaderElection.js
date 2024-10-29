@@ -6,8 +6,6 @@ export function useTabLeaderElection(activeTabKey = 'leader-election-active-tab'
                                      heartbeatTimeout = 900) {
     const tabId = (Date.now() + Math.random()).toString() // Unique ID for this tab
 
-    console.log(`Tab ID: ${tabId}`)
-
     const isLeaderTab = ref(false)
 
 

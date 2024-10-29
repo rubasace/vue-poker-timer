@@ -65,6 +65,8 @@ export const useTournamentInfoStore = defineStore('tournamentInfo', () => {
         let totalMinutes = 0;
         let i = 1;
         let nextLevel = levels.value[timerStore.levelIndex + 1];
+
+
         while (nextLevel && !nextLevel?.break) {
             totalMinutes += nextLevel.minutes;
             i++;

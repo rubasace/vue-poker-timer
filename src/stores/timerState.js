@@ -6,7 +6,7 @@ import {useLeaderStore} from "@/stores/leaderState.js";
 
 export const useTimerStore = defineStore('timerState', () => {
     const levelIndex = useLocalStorage('vue-poker-timer-level-index', 0)
-    const levelTimer = useLocalStorage('vue-poker-timer-level-timer', null)
+    const levelTimer = useLocalStorage('vue-poker-timer-level-timer', 0)
     const tournamentStartTime = useLocalStorage('vue-poker-timer-tournament-start-time', null)
     const active = useLocalStorage('vue-poker-timer-tournament-start-time', false)
 
