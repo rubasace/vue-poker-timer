@@ -1,12 +1,12 @@
 import {defineStore} from 'pinia'
 import {useLocalStorage} from '@vueuse/core'
-import {nextTick, onBeforeUnmount, onMounted, watch} from 'vue'
+import {nextTick, onBeforeMount, onBeforeUnmount, onMounted, watch} from 'vue'
 import {useTournamentInfoStore} from "@/stores/tournamentInfo.js"
 import {useLeaderStore} from "@/stores/leaderState.js";
 
 export const useTimerStore = defineStore('timerState', () => {
     const levelIndex = useLocalStorage('vue-poker-timer-level-index', 0)
-    const levelTimer = useLocalStorage('vue-poker-timer-level-timer', 0)
+    const levelTimer = useLocalStorage('vue-poker-timer-level-timer', null)
     const tournamentStartTime = useLocalStorage('vue-poker-timer-tournament-start-time', null)
     const active = useLocalStorage('vue-poker-timer-tournament-start-time', false)
 
@@ -87,6 +87,12 @@ export const useTimerStore = defineStore('timerState', () => {
 
     onMounted(() => {
         runCountDownTimer()
+    })
+
+    onBeforeMount(() => {
+        if(levelTimer.value === null) {
+            levelTimer.value = calculateLevelSeconds()
+        }
     })
 
     onBeforeUnmount(() => {

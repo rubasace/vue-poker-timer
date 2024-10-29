@@ -11,9 +11,11 @@ import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
 import {formatClockValue} from "@/util/formatUtils.js";
 import {useConfirm} from "primevue/useconfirm";
 import {useMouse} from '@vueuse/core'
+import {useKeyboardShortcuts} from "@/composables/useKeyboardShortcuts.js";
 
 const confirm = useConfirm();
 const {x, y} = useMouse()
+useKeyboardShortcuts()
 
 
 const entriesStore = useEntriesStore();

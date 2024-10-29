@@ -3,9 +3,11 @@ import Stat from "@/components/Stat.vue";
 import {useConfirm} from "primevue/useconfirm";
 import {useEntriesStore} from "@/stores/playerActions.js";
 import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
+import {useTimerStore} from "@/stores/timerState.js";
 
 const confirm = useConfirm();
 const entriesStore = useEntriesStore();
+const timerStore = useTimerStore();
 const tournamentInfoStore = useTournamentInfoStore();
 
 
@@ -21,6 +23,7 @@ function resetEntries() {
     },
     accept: () => {
       entriesStore.resetStore()
+      timerStore.resetStore()
     }
   });
 }
