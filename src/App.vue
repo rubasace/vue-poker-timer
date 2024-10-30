@@ -5,9 +5,9 @@ import Clock from "@/components/Clock.vue";
 import TitleValue from "@/components/TitleValue.vue";
 import Configuration from "@/components/configuration/Configuration.vue";
 import Dialog from "primevue/dialog";
-import {useEntriesStore} from "@/stores/playerActions";
-import {useTimerStore} from "@/stores/timerState.js";
-import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
+import {useEntriesStore} from "@/stores/entriesStore.js";
+import {useTimerStore} from "@/stores/timerStore.js";
+import {useTournamentInfoStore} from "@/stores/tournamentInfoStore.js";
 import {formatClockValue} from "@/util/formatUtils.js";
 import {useConfirm} from "primevue/useconfirm";
 import {useMouse} from '@vueuse/core'

@@ -1,10 +1,10 @@
 import {defineStore} from 'pinia'
 import {useLocalStorage} from '@vueuse/core'
 import {nextTick, onBeforeMount, onBeforeUnmount, onMounted, watch} from 'vue'
-import {useTournamentInfoStore} from "@/stores/tournamentInfo.js"
-import {useLeaderStore} from "@/stores/leaderState.js";
+import {useTournamentInfoStore} from "@/stores/tournamentInfoStore.js"
+import {useLeaderStore} from "@/stores/leaderStore.js";
 
-export const useTimerStore = defineStore('timerState', () => {
+export const useTimerStore = defineStore('timerStore', () => {
     const levelIndex = useLocalStorage('vue-poker-timer-level-index', 0)
     const levelTimer = useLocalStorage('vue-poker-timer-level-timer', -1)
     const tournamentStartTime = useLocalStorage('vue-poker-timer-tournament-start-time', null)

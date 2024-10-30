@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
 import { computed, watch } from 'vue';
 import { useLocalStorage } from '@vueuse/core';
-import { useTimerStore } from "@/stores/timerState.js";
+import { useTimerStore } from "@/stores/timerStore.js";
 
-export const useTournamentInfoStore = defineStore('tournamentInfo', () => {
+export const useTournamentInfoStore = defineStore('tournamentInfoStore', () => {
     // State
     const tournamentSeries = useLocalStorage('vue-poker-timer-tournament-series', 'Marcosfa Poker Tour');
     const tournamentName = useLocalStorage('vue-poker-timer-tournament-name', '#2');

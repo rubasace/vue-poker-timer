@@ -1,10 +1,10 @@
 <script setup>
 
 import {computed, watch} from "vue";
-import {useTimerStore} from "@/stores/timerState.js";
+import {useTimerStore} from "@/stores/timerStore.js";
 import {formatClockValue} from "@/util/formatUtils.js";
 import newLevelSound from "@/assets/sounds/nuevo_cambio_de_nivel.wav";
-import {useLeaderStore} from "@/stores/leaderState.js";
+import {useLeaderStore} from "@/stores/leaderStore.js";
 
 const timerStore = useTimerStore();
 const leaderStore = useLeaderStore()

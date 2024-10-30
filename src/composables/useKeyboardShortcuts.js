@@ -1,6 +1,6 @@
 import {onKeyStroke} from "@vueuse/core";
-import {useTimerStore} from "@/stores/timerState.js";
-import {useEntriesStore} from "@/stores/playerActions.js";
+import {useTimerStore} from "@/stores/timerStore.js";
+import {useEntriesStore} from "@/stores/entriesStore.js";
 
 export function useKeyboardShortcuts() {
 

@@ -1,9 +1,9 @@
 <script setup>
 import Stat from "@/components/Stat.vue";
 import {useConfirm} from "primevue/useconfirm";
-import {useEntriesStore} from "@/stores/playerActions.js";
-import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
-import {useTimerStore} from "@/stores/timerState.js";
+import {useEntriesStore} from "@/stores/entriesStore.js";
+import {useTournamentInfoStore} from "@/stores/tournamentInfoStore.js";
+import {useTimerStore} from "@/stores/timerStore.js";
 
 const confirm = useConfirm();
 const entriesStore = useEntriesStore();

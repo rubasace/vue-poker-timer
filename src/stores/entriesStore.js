@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { useLocalStorage } from '@vueuse/core'
 
 export const useEntriesStore = defineStore({
-    id: 'playerActions',
+    id: 'entriesStore',
     state: () => ({
         remainingPlayers: useLocalStorage('vue-poker-timer-remaining-players', 0),
         entries: useLocalStorage('vue-poker-timer-entries', 0),

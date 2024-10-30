@@ -1,5 +1,5 @@
 <script setup>
-import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
+import {useTournamentInfoStore} from "@/stores/tournamentInfoStore.js";
 import TournamentStructureConfiguration from "@/components/configuration/TournamentStructureConfiguration.vue";
 import {ref} from "vue";
 

@@ -1,6 +1,6 @@
 <script setup>
 
-import {useTournamentInfoStore} from "@/stores/tournamentInfo.js";
+import {useTournamentInfoStore} from "@/stores/tournamentInfoStore.js";
 
 const tournamentInfoStore = useTournamentInfoStore();
 
