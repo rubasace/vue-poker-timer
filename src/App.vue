@@ -331,10 +331,19 @@ main
 //TODO change layout for portrait so info appears in rows on top and bottom
 @media (orientation: portrait)
   main
-    font-size: 1.2em
-    .central-panel
-      .timer
-        max-height: 30% !important
+    transform: rotate(90deg)
+    transform-origin: bottom left
+
+    position: absolute
+    top: -100vw
+    left: 2vh
+    height: 100vw
+    width: 100vh
+    overflow: hidden
+    //font-size: 1.2em
+    //.central-panel
+    //  .timer
+    //    max-height: 30% !important
   @media (max-width: 700px)
     main
       font-size: 0.45em
