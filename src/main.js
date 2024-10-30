@@ -65,4 +65,14 @@ app.use(PrimeVue, {
 app.use(ConfirmationService);
 app.use(createPinia())
 
+// Register the v-visible directive globally
+app.directive('visible', {
+    mounted(el, binding) {
+        el.style.visibility = binding.value ? 'visible' : 'hidden';
+    },
+    updated(el, binding) {
+        el.style.visibility = binding.value ? 'visible' : 'hidden';
+    }
+});
+
 app.mount('#app')

@@ -163,7 +163,6 @@ onBeforeUnmount(() => {
     </div>
     <div class="aside left-panel">
       <TitleValue title="Prize pool" :value="totalPrizePool+tournamentInfoStore.currency.symbol"/>
-      <!--      <TitleValue title="" value=""/>-->
       <TitleValue title="Reentries" :value="entriesStore.reentries.toLocaleString()"/>
       <TitleValue title="Addons" :value="entriesStore.addons.toLocaleString()"/>
     </div>
@@ -172,22 +171,25 @@ onBeforeUnmount(() => {
         <div class="series secondary" v-if="tournamentInfoStore.tournamentSeries">{{ tournamentInfoStore.tournamentSeries }}</div>
         <div class="tournament primary">{{ tournamentInfoStore.tournamentName }}</div>
       </div>
+      <div class="level-name">
+        <span class="current-level-name" v-visible="tournamentInfoStore.currentLevelNumber">Level {{ tournamentInfoStore.currentLevelNumber }}</span>
+      </div>
       <div class="timer">
         <Clock class="clock" ref="clock"/>
+        <div class="current-level" v-if="!tournamentInfoStore.currentLevel?.break">
+          <BlindsInfo class="level-blinds" :small-blind="smallBlind" :big-blind="bigBlind" :ante="ante"/>
+        </div>
+        <div class="break" v-else>
+          <span>BREAK</span>
+        </div>
       </div>
-      <div class="current-level" v-if="!tournamentInfoStore.currentLevel?.break">
-        <InlineInfo text="blinds" :value="`${smallBlind}/${bigBlind}`"/>
-        <InlineInfo text="ante" :value="ante"/>
+      <div class="next-level">
         <InlineInfo text="Next Level" :value="nextBlinds"/>
       </div>
-      <div class="break" v-else>
-        <InlineInfo text="Next Level" :value="nextBlinds"/>
-        <span>BREAK</span>
-      </div>
+
     </div>
     <div class="aside right-panel">
       <TitleValue title="Players" :value="entriesStore.remainingPlayers.toLocaleString() + '/' + entriesStore.entries.toLocaleString()"/>
-      <TitleValue title="Level" :value="timerStore.levelIndex + 1"/>
       <TitleValue title="Avg Stack" :value="avgStack.toLocaleString()"/>
       <TitleValue :title="nextBreakTitle" :value="nextBreak"/>
     </div>
@@ -199,6 +201,24 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="sass" scoped>
+
+@mixin bordered-lines($border-color, $border-width: 4px, $separation: -0.3em)
+  position: relative
+
+  &::before, &::after
+    content: ''
+    position: absolute
+    height: 65%
+
+  &::before
+    left: $separation
+    border-left: $border-width solid $border-color
+
+  &::after
+    right: $separation
+    border-right: $border-width solid $border-color
+
+
 $primary-color: #0b5404
 //$secondary-color: #d46f00
 $secondary-color: #d46f00
@@ -211,7 +231,7 @@ main
   grid-template-columns: 2fr 3.8fr 2fr
   grid-column-gap: 0
   text-transform: uppercase
-  font-size: 2.2em
+  font-size: 1.8rem
   font-family: 'Chivo Mono Variable', monospace
 
   .settings-bar
@@ -239,56 +259,56 @@ main
     font-size: 1em
 
   .central-panel
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: space-around
     font-size: 2em
-    display: grid
-    grid-template-rows: 1fr 3fr 2fr
+    gap: 1em
+
     .header
       text-align: center
       line-height: 1.2em
+
       .tournament
         font-size: 1.7em
+        flex-grow: 0
 
     .timer
+      @include bordered-lines($primary-color)
       position: relative
       text-align: center
-      padding: 0 0.3em
       width: 100%
+      max-height: 50%
       display: flex
       flex-direction: column
       align-items: center
-      justify-content: center
+      justify-content: space-between
       text-transform: uppercase
-
-      $border: 4px solid $primary-color
-      $separation: -0.3em
-
-      &::before, &::after
-        content: ''
-        position: absolute
-        height: 65%
-
-      &::before
-        left: $separation
-        border-left: $border
-
-      &::after
-        right: $separation
-        border-right: $border
+      line-height: 1em
+      padding: 0.3em
+      flex-grow: 1
 
       .clock
-        font-size: 4em
-    .current-level
-      font-size: 1.2em
-      width: 100%
-      text-align: center
+        font-size: 5.5em
+        flex-shrink: 0
+        margin-bottom: 0.5em
 
-    .break
-      width: 100%
-      text-align: center
+      .current-level
+        width: 100%
+        text-align: center
 
-      span
+        .level-blinds
+          font-size: 1.1em
+
+      .break
         color: $secondary-color
-        font-size: 2.8em
+        margin-top: 0.3em
+        font-size: 3.5em
+
+  .next-level
+    flex-grow: 0
+    font-size: 0.8em
 
 .primary, :deep(.primary)
   color: $primary-color
@@ -306,6 +326,10 @@ main
 
 
 @media (orientation: portrait)
+  main
+    .central-panel
+      .timer
+        max-height: 30% !important
   @media (max-width: 700px)
     main
       font-size: 0.45em

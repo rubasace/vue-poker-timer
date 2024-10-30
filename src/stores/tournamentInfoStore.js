@@ -47,6 +47,14 @@ export const useTournamentInfoStore = defineStore('tournamentInfoStore', () => {
 
     // Getters
     const currentLevel = computed(() => levels.value[timerStore.levelIndex]);
+    const currentLevelNumber = computed(()=> {
+        if(levels.value[timerStore.levelIndex]?.break){
+            return null
+        }
+        return levels.value.slice(0, timerStore.levelIndex + 1)
+            .filter(level => !level.break)
+            .length;
+    })
     const nextLevel = computed(() => {
         let next = levels.value[timerStore.levelIndex + 1];
         if (next?.break) {
@@ -114,6 +122,7 @@ export const useTournamentInfoStore = defineStore('tournamentInfoStore', () => {
 
         // Getters
         currentLevel,
+        currentLevelNumber,
         nextLevel,
         lastLevel,
         nextLevelSecondsUntilBreak,

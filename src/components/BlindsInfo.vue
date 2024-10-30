@@ -32,8 +32,8 @@ const props = defineProps<{
 .blinds-info
   display: flex
   justify-content: space-around
-  line-height: 3em
+  line-height: 2em
   .value
-    font-size: 3em
+    font-size: 1.7em
     font-weight: 900
 </style>
