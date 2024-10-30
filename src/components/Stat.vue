@@ -1,22 +1,27 @@
 <script setup lang="ts">
 
 defineProps<{
-  title: string
   value: number | string
+  title: string
 }>()
 
 </script>
 <template>
-  <Card style="width: 13em">
+  <Card style="width: 13em" >
     <template #title>
-      <div class="text-xl font-bold">
+      <div class="value">
         {{ value }}
       </div>
     </template>
     <template #content>
-      <div>
+      <div class="title">
         {{ title }}
       </div>
     </template>
   </Card>
 </template>
+<style scoped lang="sass">
+.value
+  font-size: 2.3em !important
+  font-weight: bold
+</style>
