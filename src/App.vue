@@ -37,7 +37,7 @@ const nextBlinds = computed(() => {
   if (!tournamentInfoStore.nextLevel) {
     return 'NONE';
   }
-  return `${tournamentInfoStore.nextLevel.minutes}′ - ${normalizeBetAmount(tournamentInfoStore.nextLevel.smallBlind, tournamentInfoStore.nextLevel.bigBlind)}/${normalizeBetAmount(tournamentInfoStore.nextLevel.bigBlind)}(${normalizeBetAmount(tournamentInfoStore.nextLevel.ante)})`;
+  return `${normalizeBetAmount(tournamentInfoStore.nextLevel.smallBlind, tournamentInfoStore.nextLevel.bigBlind)}/${normalizeBetAmount(tournamentInfoStore.nextLevel.bigBlind)}(${normalizeBetAmount(tournamentInfoStore.nextLevel.ante)})`;
 });
 const totalChipsInGame = computed(() => {
   return tournamentInfoStore.initialStack * (entriesStore.entries + entriesStore.reentries) + entriesStore.addons * tournamentInfoStore.addonStack + entriesStore.doubleAddons * tournamentInfoStore.addonStack * 2;
@@ -184,7 +184,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
       <div class="next-level">
-        <InlineInfo text="Next Level" :value="nextBlinds"/>
+        <InlineInfo :text="`Next Level(${tournamentInfoStore.nextLevel?.minutes}′)`" :value="nextBlinds" v-visible="tournamentInfoStore.nextLevel"/>
       </div>
 
     </div>
