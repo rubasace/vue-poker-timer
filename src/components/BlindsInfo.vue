@@ -1,22 +1,27 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 
 const props = defineProps<{
-  text: string
-  value: number | string
+  smallBlind: number | string
+  bigBlind: number | string
+  ante?: number | string
 }>()
 
-const blindValues = computed(() => {
-  return props.blinds?.split('/').map(b => parseInt(b))
-})
 
 </script>
 <template>
-  <div class="blinds-info" >
-    <div class="blinds-data">
-      <div class="info-line">
-        <span class="text">{{text}}:</span>
-        <div class="value">{{value}}</div>
+  <div class="blinds-info">
+    <div class="blinds">
+      <span class="title">Blinds</span>
+      <div class="value">
+        <span class="small-blind">{{ smallBlind }}</span>
+        <span class="separator">/</span>
+        <span class="big-blind">{{ bigBlind }}</span>
+      </div>
+    </div>
+    <div class="ante" v-if="ante">
+      <span class="title">Ante</span>
+      <div class="value">
+        <span class="ante">{{ ante }}</span>
       </div>
     </div>
   </div>
@@ -25,11 +30,10 @@ const blindValues = computed(() => {
 
 <style scoped lang="sass">
 .blinds-info
-  //font-weight: bolder
-  .info-line
-    display: flex
-    font-size: 0.6em
-    justify-content: space-between
-    //.value
-      //font-size: 1.3em
+  display: flex
+  justify-content: space-around
+  line-height: 3em
+  .value
+    font-size: 3em
+    font-weight: 900
 </style>

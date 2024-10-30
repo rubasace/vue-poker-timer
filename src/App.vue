@@ -12,6 +12,7 @@ import {formatClockValue} from "@/util/formatUtils.js";
 import {useConfirm} from "primevue/useconfirm";
 import {useMouse} from '@vueuse/core'
 import {useKeyboardShortcuts} from "@/composables/useKeyboardShortcuts.js";
+import InlineInfo from "@/components/InlineInfo.vue";
 
 const confirm = useConfirm();
 const {x, y} = useMouse()
@@ -175,12 +176,12 @@ onBeforeUnmount(() => {
         <Clock class="clock" ref="clock"/>
       </div>
       <div class="current-level" v-if="!tournamentInfoStore.currentLevel?.break">
-        <BlindsInfo text="blinds" :value="`${smallBlind}/${bigBlind}`"/>
-        <BlindsInfo text="ante" :value="ante"/>
-        <BlindsInfo text="Next Level" :value="nextBlinds"/>
+        <InlineInfo text="blinds" :value="`${smallBlind}/${bigBlind}`"/>
+        <InlineInfo text="ante" :value="ante"/>
+        <InlineInfo text="Next Level" :value="nextBlinds"/>
       </div>
       <div class="break" v-else>
-        <BlindsInfo text="Next Level" :value="nextBlinds"/>
+        <InlineInfo text="Next Level" :value="nextBlinds"/>
         <span>BREAK</span>
       </div>
     </div>
