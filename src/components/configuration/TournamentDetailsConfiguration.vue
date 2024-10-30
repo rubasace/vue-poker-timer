@@ -1,6 +1,6 @@
 <script setup>
 import {useTournamentInfoStore} from "@/stores/tournamentInfoStore.js";
-import TournamentStructureConfiguration from "@/components/configuration/TournamentStructureConfiguration.vue";
+import BlindsStructure from "@/components/configuration/BlindsStructure.vue";
 import {ref} from "vue";
 
 const tournamentInfoStore = useTournamentInfoStore();
@@ -70,9 +70,12 @@ function openFilePicker() {
       accept="application/json"
       style="display: none"
   />
-  <Button label="Import" icon="pi pi-upload" severity="primary" @click="openFilePicker" class="action" raised/>
-  <Button label="Export" icon="pi pi-download" severity="info" @click="exportTournamentDetails" class="action" raised/>
-  <div class="form-container">
+  <div class="actions flex flex-row-reverse gap-2" >
+    <Button label="Import" icon="pi pi-upload" severity="primary" @click="openFilePicker" class="action" raised/>
+    <Button label="Export" icon="pi pi-download" severity="info" @click="exportTournamentDetails" class="action"  raised/>
+  </div>
+
+  <div class="form-container flex flex-wrap justify-content-between">
     <div class="section-title">General Info</div>
     <div class="p-field">
       <label for="tournamentSeries">Tournament Series*</label>
@@ -185,30 +188,27 @@ function openFilePicker() {
   </div>
 
   <div class="structure">
-    <TournamentStructureConfiguration/>
+    <BlindsStructure/>
   </div>
 </template>
 
 <style scoped lang="sass">
-.form-container
-  display: grid
-  grid-template-columns: 1fr 1fr
-  gap: 1em
-
 .p-field
+  width: 48%
+  min-width: 200px
   display: flex
   flex-direction: column
 
 .section-title
-  grid-column: span 2
+  width: 100%
+  margin-top: 1em
   font-weight: bold
   font-size: 1.2em
-  margin-top: 1em
 
 .structure
   margin-top: 2em
 
-.action
-  margin-left: 1em
-  float: right
+@media (max-width: 1080px)
+  .p-field
+    width: 100%
 </style>
