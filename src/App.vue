@@ -172,7 +172,7 @@ onBeforeUnmount(() => {
         <div class="tournament primary">{{ tournamentInfoStore.tournamentName }}</div>
       </div>
       <div class="level-name">
-        <span class="current-level-name" v-visible="tournamentInfoStore.currentLevelNumber">Level {{ tournamentInfoStore.currentLevelNumber }}</span>
+        <span class="current-level-name secondary" v-visible="tournamentInfoStore.currentLevelNumber">Level {{ tournamentInfoStore.currentLevelNumber }}</span>
       </div>
       <div class="timer">
         <Clock class="clock" ref="clock"/>
@@ -279,7 +279,7 @@ main
       position: relative
       text-align: center
       width: 100%
-      max-height: 50%
+      max-height: 45%
       display: flex
       flex-direction: column
       align-items: center
@@ -305,6 +305,11 @@ main
         color: $secondary-color
         margin-top: 0.3em
         font-size: 3.5em
+        span
+          font-weight: 600
+
+    .next-level
+      font-size: 1.05em
 
   .next-level
     flex-grow: 0

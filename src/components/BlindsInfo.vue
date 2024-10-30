@@ -11,7 +11,7 @@ const props = defineProps<{
 <template>
   <div class="blinds-info">
     <div class="blinds">
-      <span class="title">Blinds</span>
+      <span class="title secondary">Blinds</span>
       <div class="value">
         <span class="small-blind">{{ smallBlind }}</span>
         <span class="separator">/</span>
@@ -19,7 +19,7 @@ const props = defineProps<{
       </div>
     </div>
     <div class="ante" v-if="ante">
-      <span class="title">Ante</span>
+      <span class="title secondary">Ante</span>
       <div class="value">
         <span class="ante">{{ ante }}</span>
       </div>

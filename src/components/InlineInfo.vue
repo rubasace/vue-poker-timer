@@ -19,6 +19,5 @@ const props = defineProps<{
 .inline-info
   display: flex
   justify-content: space-between
-  font-size: 0.6em
 
 </style>
