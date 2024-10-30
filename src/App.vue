@@ -37,7 +37,7 @@ const nextBlinds = computed(() => {
   if (!tournamentInfoStore.nextLevel) {
     return 'NONE';
   }
-  return `${normalizeBetAmount(tournamentInfoStore.nextLevel.smallBlind, tournamentInfoStore.nextLevel.bigBlind)}/${normalizeBetAmount(tournamentInfoStore.nextLevel.bigBlind)} (${normalizeBetAmount(tournamentInfoStore.nextLevel.ante)})`;
+  return `${tournamentInfoStore.nextLevel.minutes}′ - ${normalizeBetAmount(tournamentInfoStore.nextLevel.smallBlind, tournamentInfoStore.nextLevel.bigBlind)}/${normalizeBetAmount(tournamentInfoStore.nextLevel.bigBlind)}(${normalizeBetAmount(tournamentInfoStore.nextLevel.ante)})`;
 });
 const totalChipsInGame = computed(() => {
   return tournamentInfoStore.initialStack * (entriesStore.entries + entriesStore.reentries) + entriesStore.addons * tournamentInfoStore.addonStack + entriesStore.doubleAddons * tournamentInfoStore.addonStack * 2;
@@ -309,11 +309,9 @@ main
           font-weight: 600
 
     .next-level
-      font-size: 1.05em
-
-  .next-level
-    flex-grow: 0
-    font-size: 0.8em
+      flex-grow: 0
+      font-size: 0.8em
+      width: 100%
 
 .primary, :deep(.primary)
   color: $primary-color
@@ -330,8 +328,10 @@ main
     font-size: 1.3em
 
 
+//TODO change layout for portrait so info appears in rows on top and bottom
 @media (orientation: portrait)
   main
+    font-size: 1.2em
     .central-panel
       .timer
         max-height: 30% !important

@@ -9,8 +9,8 @@ const props = defineProps<{
 </script>
 <template>
   <div class="inline-info">
-    <span class="text">{{ text }}:</span>
-    <div class="value">{{ value }}</div>
+    <div class="text"><span>{{ text }}:</span></div>
+    <div class="value"><span>{{ value }}</span></div>
   </div>
 </template>
 
@@ -18,6 +18,6 @@ const props = defineProps<{
 <style scoped lang="sass">
 .inline-info
   display: flex
-  justify-content: space-between
-
+  align-content: center
+  justify-content: space-around
 </style>
