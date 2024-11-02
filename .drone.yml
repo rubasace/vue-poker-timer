@@ -23,7 +23,7 @@ steps:
         - main
         - release/*
 
-  - name: bake
+  - name: release
     image: plugins/docker
     settings:
     username:
