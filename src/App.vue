@@ -336,10 +336,10 @@ main
 
     position: absolute
     top: -100vw
-    left: 2vh
+    left: 0
     height: 100vw
     width: 100vh
-    overflow: hidden
+    //overflow: hidden
     //font-size: 1.2em
     //.central-panel
     //  .timer
