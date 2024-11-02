@@ -26,12 +26,12 @@ steps:
   - name: release
     image: plugins/docker
     settings:
-    username:
-      from_secret: docker_user
-    password:
-      from_secret: docker_pass
-    repo: rubasace/vue-poker-timer
-    tags: ${CI_BUILD_TARGET}
+      username:
+        from_secret: docker_user
+      password:
+        from_secret: docker_pass
+      repo: rubasace/vue-poker-timer
+      tags: ${CI_BUILD_TARGET}
     when:
       event:
         - promote
