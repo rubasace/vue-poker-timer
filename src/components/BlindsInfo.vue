@@ -34,6 +34,7 @@ const props = defineProps<{
   justify-content: space-around
   line-height: 2em
   .value
-    font-size: 1.7em
-    font-weight: 900
+    span
+      font-size: 1.7em
+      font-weight: 600
 </style>

@@ -16,14 +16,26 @@ steps:
         from_secret: docker_user
       password:
         from_secret: docker_pass
-      repo: registry.nasvigo.com/v2/rubasace/vue-poker-timer
-      registry: registry.nasvigo.com/v2
-      tags: 1.0.0.${CI_BUILD_NUMBER}
+      repo: rubasace/vue-poker-timer
+      tags: beta
     when:
       branch:
         - main
         - release/*
 
+  - name: bake
+    image: plugins/docker
+    settings:
+    username:
+      from_secret: docker_user
+    password:
+      from_secret: docker_pass
+    repo: rubasace/vue-poker-timer
+    tags: ${CI_BUILD_TARGET}
+    when:
+      event:
+        - promote
 trigger:
   event:
     - push
+    - promote
