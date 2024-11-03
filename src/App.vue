@@ -202,35 +202,33 @@ onBeforeUnmount(() => {
 
 <style lang="sass" scoped>
 
-@mixin bordered-lines($border-color, $border-width: 4px, $separation: -0.3em)
+@mixin bordered-lines($border-color, $border-width: 4px, $separation: 0.2em)
   position: relative
 
   &::before, &::after
     content: ''
     position: absolute
-    height: 65%
+    height: 75%
 
   &::before
-    left: $separation
+    left: -$separation
     border-left: $border-width solid $border-color
 
   &::after
-    right: $separation
+    right: -$separation
     border-right: $border-width solid $border-color
 
 
 $primary-color: #0b5404
-//$secondary-color: #d46f00
 $secondary-color: #d46f00
 main
   width: 100%
   height: 90vh
   color: whitesmoke
-  display: grid
   margin: auto 0
   user-select: none
-  grid-template-columns: 2fr 3.8fr 2fr
-  grid-column-gap: 0
+  display: flex
+  flex-direction: row
   text-transform: uppercase
   font-size: 1.8rem
   font-family: 'Chivo Mono Variable', monospace
@@ -253,6 +251,7 @@ main
 
   .aside
     padding: 0
+    flex: 1
     display: flex
     flex-direction: column
     align-items: center
@@ -260,6 +259,7 @@ main
     font-size: 1em
 
   .central-panel
+    flex: 2
     display: flex
     flex-direction: column
     align-items: center
@@ -329,25 +329,24 @@ main
     font-size: 1.3em
 
 
-//TODO change layout for portrait so info appears in rows on top and bottom
 @media (orientation: portrait)
   main
-    transform: rotate(90deg)
-    transform-origin: bottom left
+    flex-direction: column
+    font-size: 1.6em
+    .central-panel
+      margin-bottom: 1em
+      .timer
+        @include bordered-lines($primary-color)
+    .aside
+      order: 2
+      gap: 1em
+      flex-direction: row
+    @media (max-width: 900px)
+      font-size: 1.3em
 
-    position: absolute
-    top: -100vw
-    left: 0
-    height: 100vw
-    width: 100vh
-    //overflow: hidden
-    //font-size: 1.2em
-    //.central-panel
-    //  .timer
-    //    max-height: 30% !important
-  @media (max-width: 700px)
-    main
-      font-size: 0.45em
+    @media (max-width: 600px)
+      font-size: 0.55em
+
 
 
 </style>
