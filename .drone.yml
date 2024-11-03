@@ -9,7 +9,7 @@ steps:
       - npm ci
       - npm run build
 
-  - name: bake
+  - name: release-beta
     image: plugins/docker
     settings:
       username:
@@ -23,7 +23,7 @@ steps:
         - main
         - release/*
 
-  - name: release
+  - name: release-stable
     image: plugins/docker
     settings:
       username:
