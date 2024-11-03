@@ -144,7 +144,7 @@ onMounted(() => {
     <div class="settings-bar" v-if="!idleMouse">
       <i class="pi pi-cog settings-button" @click="showDialog = true"/>
     </div>
-    <div class="aside left-panel">
+    <div class="aside entries-data">
       <TitleValue title="Prize pool" :value="totalPrizePool+tournamentInfoStore.currency.symbol"/>
       <TitleValue title="Reentries" :value="entriesStore.reentries.toLocaleString()" v-if="tournamentInfoStore.reentryEnabled"/>
       <TitleValue title="Addons" :value="entriesStore.addons.toLocaleString()" v-if="tournamentInfoStore.addonEnabled"/>
@@ -171,7 +171,7 @@ onMounted(() => {
       </div>
 
     </div>
-    <div class="aside right-panel">
+    <div class="aside tournament-data">
       <TitleValue title="Players" :value="entriesStore.remainingPlayers.toLocaleString() + '/' + entriesStore.entries.toLocaleString()"/>
       <TitleValue title="Avg Stack" :value="avgStack.toLocaleString()"/>
       <TitleValue :title="nextBreakTitle" :value="nextBreak"/>
@@ -228,7 +228,7 @@ main
       position: absolute
       top: 25px
       right: 50px
-      font-size: 1.3em
+      font-size: 2rem
 
       &:hover
         cursor: pointer
@@ -331,16 +331,16 @@ main
 
 @media (orientation: portrait)
   main
-    flex-direction: column
     font-size: 1.6em
+    flex-wrap: wrap
     .central-panel
       margin-bottom: 1em
+      flex-basis: 100%
       .timer
         @include bordered-lines($primary-color)
     .aside
       order: 2
-      gap: 1em
-      flex-direction: row
+      flex-basis: 50%
 
   @media (max-width: 900px)
     main
