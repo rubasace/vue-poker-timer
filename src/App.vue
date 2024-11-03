@@ -225,6 +225,7 @@ $secondary-color: #d46f00
 main
   width: 100%
   height: 90vh
+  color: whitesmoke
   display: grid
   margin: auto 0
   user-select: none
