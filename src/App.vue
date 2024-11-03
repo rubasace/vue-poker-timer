@@ -228,6 +228,8 @@ main
   margin: auto 0
   user-select: none
   display: flex
+  align-content: center
+  justify-content: center
   flex-direction: row
   text-transform: uppercase
   font-size: 1.8rem
@@ -259,7 +261,7 @@ main
     font-size: 1em
 
   .central-panel
-    flex: 2
+    flex: 1
     display: flex
     flex-direction: column
     align-items: center
@@ -328,6 +330,21 @@ main
   main
     font-size: 1.3em
 
+@media (max-width: 1150px)
+  main
+    font-size: 1.1em
+
+@media (max-width: 980px)
+  main
+    font-size: 0.9em
+
+@media (max-width: 820px)
+  main
+    font-size: 0.7em
+
+@media (max-width: 650px)
+  main
+    font-size: 0.55em
 
 @media (orientation: portrait)
   main
@@ -341,11 +358,17 @@ main
       order: 2
       gap: 1em
       flex-direction: row
-    @media (max-width: 900px)
-      font-size: 1.3em
 
-    @media (max-width: 600px)
-      font-size: 0.55em
+  @media (max-width: 900px)
+    main
+      font-size: 1.1em
+
+  @media (max-width: 700px)
+    main
+      font-size: 0.6em
+      .aside
+        font-size: 1em
+
 
 
 
