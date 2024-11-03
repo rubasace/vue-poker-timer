@@ -146,8 +146,8 @@ onMounted(() => {
     </div>
     <div class="aside left-panel">
       <TitleValue title="Prize pool" :value="totalPrizePool+tournamentInfoStore.currency.symbol"/>
-      <TitleValue title="Reentries" :value="entriesStore.reentries.toLocaleString()"/>
-      <TitleValue title="Addons" :value="entriesStore.addons.toLocaleString()"/>
+      <TitleValue title="Reentries" :value="entriesStore.reentries.toLocaleString()" v-if="tournamentInfoStore.reentryEnabled"/>
+      <TitleValue title="Addons" :value="entriesStore.addons.toLocaleString()" v-if="tournamentInfoStore.addonEnabled"/>
     </div>
     <div class="central-panel">
       <div class="header">
