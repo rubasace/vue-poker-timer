@@ -7,7 +7,7 @@ import {useLeaderStore} from "@/stores/leaderStore.js";
 export const useTimerStore = defineStore('timerStore', () => {
     const levelIndex = useLocalStorage('vue-poker-timer-level-index', 0)
     const levelTimer = useLocalStorage('vue-poker-timer-level-timer', -1)
-    const tournamentStartTime = useLocalStorage('vue-poker-timer-tournament-start-time', null)
+    const tournamentStartTime = useLocalStorage('vue-poker-timer-tournament-start-time', 0)
     const active = useLocalStorage('vue-poker-timer-tournament-start-time', false)
 
 
@@ -70,6 +70,10 @@ export const useTimerStore = defineStore('timerStore', () => {
         }
     }
 
+    function setStartTime() {
+        tournamentStartTime.value = Date.now()
+    }
+
     function calculateLevelSeconds() {
         return 60 * (useTournamentInfoStore().currentLevel?.minutes ?? 0)
     }
@@ -77,7 +81,7 @@ export const useTimerStore = defineStore('timerStore', () => {
     const resetStore = () => {
         levelIndex.value = 0
         levelTimer.value = -1
-        tournamentStartTime.value = null
+        tournamentStartTime.value = 0
         active.value = false
     }
 
@@ -109,6 +113,7 @@ export const useTimerStore = defineStore('timerStore', () => {
         addSeconds,
         reduceSeconds,
         toggle,
+        setStartTime,
         resetStore
     }
 })

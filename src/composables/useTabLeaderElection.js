@@ -1,9 +1,9 @@
 import {onBeforeUnmount, onMounted, ref} from 'vue'
 
-export function useTabLeaderElection(activeTabKey = 'leader-election-active-tab',
+export function useTabLeaderElection({activeTabKey = 'leader-election-active-tab',
                                      heartbeatKey = 'leader-election-tab-last-heartbeat',
                                      heartbeatInterval = 400,
-                                     heartbeatTimeout = 900) {
+                                     heartbeatTimeout = 900} = {}) {
     const tabId = (Date.now() + Math.random()).toString() // Unique ID for this tab
 
     const isLeaderTab = ref(false)

@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import BlindsInfo from "@/components/BlindsInfo.vue";
 import Clock from "@/components/Clock.vue";
 import TitleValue from "@/components/TitleValue.vue";
@@ -10,12 +10,12 @@ import {useTimerStore} from "@/stores/timerStore.js";
 import {useTournamentInfoStore} from "@/stores/tournamentInfoStore.js";
 import {formatClockValue} from "@/util/formatUtils.js";
 import {useConfirm} from "primevue/useconfirm";
-import {useMouse} from '@vueuse/core'
 import {useKeyboardShortcuts} from "@/composables/useKeyboardShortcuts.js";
 import InlineInfo from "@/components/InlineInfo.vue";
+import {useIdleMouse} from "@/composables/useIdleMouse.js";
 
 const confirm = useConfirm();
-const {x, y} = useMouse()
+const {idleMouse} = useIdleMouse()
 useKeyboardShortcuts()
 
 
@@ -24,7 +24,6 @@ const timerStore = useTimerStore();
 const tournamentInfoStore = useTournamentInfoStore();
 
 const showDialog = ref(false);
-const showSettingsBar = ref(true); // Reactive variable to control the settings bar visibility
 
 //TODO show minutes of next level
 
@@ -97,21 +96,6 @@ const normalizeBetAmount = (amount, bigBlind) => {
   return value
 };
 
-// Cursor reset logic
-let cursorTimer;
-
-function resetCursorTimer() {
-  clearTimeout(cursorTimer);
-  document.body.style.cursor = "unset";
-  showSettingsBar.value = true;
-  cursorTimer = setTimeout(() => {
-    if (!showDialog.value) {
-      document.body.style.cursor = "none";
-    }
-    showSettingsBar.value = false;
-  }, 5000);
-}
-
 function checkForOldData() {
   if (!timerStore.tournamentStartTime) {
     return;
@@ -140,17 +124,16 @@ function checkForOldData() {
   }
 }
 
-watch([x, y], () => {
-  resetCursorTimer();
+watch(idleMouse, idle => {
+  if(idle){
+    document.body.style.cursor = "none"
+  } else {
+    document.body.style.cursor = "unset"
+  }
 })
 
-// Lifecycle hooks
 onMounted(() => {
   checkForOldData()
-});
-
-onBeforeUnmount(() => {
-  clearTimeout(cursorTimer);
 });
 
 </script>
@@ -158,7 +141,7 @@ onBeforeUnmount(() => {
 
 <template>
   <main>
-    <div class="settings-bar" v-if="showSettingsBar">
+    <div class="settings-bar" v-if="!idleMouse">
       <i class="pi pi-cog settings-button" @click="showDialog = true"/>
     </div>
     <div class="aside left-panel">
