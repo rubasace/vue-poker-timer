@@ -20,9 +20,10 @@ steps:
       repo: rubasace/vue-poker-timer
       tags: beta
     when:
+      event:
+        - push
       branch:
         - main
-        - release/*
 
   - name: release-stable
     image: plugins/docker
@@ -42,6 +43,6 @@ trigger:
     - promote
 ---
 kind: signature
-hmac: 840e9d85c83d5a431b6284dc8085e19716b864d9ad5553581874c586203a6513
+hmac: b74f151ce700519809a3419414dc169c2f0d893ec8555c804cbeff1742374391
 
 ...
