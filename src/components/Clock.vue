@@ -56,7 +56,6 @@ watch(levelTimer, (newVal) => {
         <span>:</span>
       </div>
 
-
       <div class="time-part">
         <span class="controls increase-button" @click="timerStore.addSeconds(1)">▲</span>
         <span class="seconds">{{ timerStore.clockParts.seconds.toString().padStart(2, '0') }}</span>
@@ -120,10 +119,10 @@ watch(levelTimer, (newVal) => {
           font-size: 0.8em
 
         &.increase-button
-          top: -1.2em
+          top: -1em
 
         &.decrease-button
-          bottom: -1.2em
+          bottom: -1em
 
         &:hover
           color: $secondary-color

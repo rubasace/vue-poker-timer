@@ -1,45 +1,16 @@
 <script setup>
 import Stat from "@/components/Stat.vue";
-import {useConfirm} from "primevue/useconfirm";
 import {useEntriesStore} from "@/stores/entriesStore.js";
 import {useTournamentInfoStore} from "@/stores/tournamentInfoStore.js";
-import {useTimerStore} from "@/stores/timerStore.js";
 import {computed} from "vue";
 
-const confirm = useConfirm();
 const entriesStore = useEntriesStore();
-const timerStore = useTimerStore();
 const tournamentInfoStore = useTournamentInfoStore();
 
 const remainingPlayers = computed(() => {
   return entriesStore.remainingPlayers.toLocaleString() + ' / ' + entriesStore.entries.toLocaleString()
 })
 
-const toggleIcon = computed(() => {
-  if (timerStore.active) {
-    return '⏸'
-  } else {
-    return '▶'
-  }
-})
-
-
-function resetEntries() {
-  confirm.require({
-    message: 'This will clear all registered actions on the tournament. Do you want to proceed?',
-    header: 'Confirmation',
-    icon: 'pi pi-exclamation-triangle',
-    rejectProps: {
-      label: 'Cancel',
-      severity: 'secondary',
-      outlined: true
-    },
-    accept: () => {
-      entriesStore.resetStore()
-      timerStore.resetStore()
-    }
-  });
-}
 </script>
 
 <template>
@@ -105,9 +76,6 @@ function resetEntries() {
                 raised outlined :disabled="!tournamentInfoStore.doubleAddonEnabled"/>
       </div>
     </div>
-    <div class="danger section">
-      <Button label="Restart Tournament" icon="pi pi-history" @click="resetEntries()" severity="danger"/>
-    </div>
   </div>
 </template>
 
@@ -149,9 +117,6 @@ function resetEntries() {
 
     ::v-deep(.action-icon)
       font-size: 2.3em
-
-  .danger
-    position: relative
 
 
 @media (max-width: 820px)

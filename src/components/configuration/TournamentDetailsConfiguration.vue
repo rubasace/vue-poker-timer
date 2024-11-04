@@ -1,7 +1,6 @@
 <script setup>
 import {useTournamentInfoStore} from "@/stores/tournamentInfoStore.js";
 import BlindsStructure from "@/components/configuration/BlindsStructure.vue";
-import {ref} from "vue";
 
 const tournamentInfoStore = useTournamentInfoStore();
 
@@ -13,67 +12,9 @@ const currencies = [
   {name: 'Australian Dollar', code: 'AUD', symbol: '$'},
 ];
 
-const fileInput = ref(null);
-
-
-function exportTournamentDetails() {
-  const tournamentDetails = {
-    tournamentInfo: {
-      ...tournamentInfoStore.$state
-    }
-  }
-  const json = JSON.stringify(tournamentDetails, null, 2)
-  const blob = new Blob([json], {type: 'application/json'})
-  const url = URL.createObjectURL(blob)
-
-  const a = document.createElement('a')
-  a.href = url
-  const prefix = tournamentInfoStore.tournamentSeries? `${tournamentInfoStore.tournamentSeries}-` : ''
-  a.download = `${prefix}${tournamentInfoStore.tournamentName}-tournament-details.json`.replace(/ /g, '_')
-  a.click()
-
-  URL.revokeObjectURL(url)
-}
-
-function importTournamentDetails(event) {
-  const file = event.files[0];
-  if (file) {
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      const fileContent = e.target.result;
-      const data = JSON.parse(fileContent);
-      tournamentInfoStore.$patch(data?.tournamentInfo);
-    };
-
-    reader.onerror = (error) => {
-      console.error("Error reading file:", error);
-    };
-
-    reader.readAsText(file);
-  }
-}
-
-function openFilePicker() {
-  fileInput.value.choose()
-}
 </script>
 
 <template>
-
-  <FileUpload
-      ref="fileInput"
-      mode="basic"
-      @select="importTournamentDetails"
-      customUpload
-      auto
-      accept="application/json"
-      style="display: none"
-  />
-  <div class="actions flex flex-row-reverse gap-2" >
-    <Button label="Import" icon="pi pi-upload" severity="primary" @click="openFilePicker" class="action" raised/>
-    <Button label="Export" icon="pi pi-download" severity="info" @click="exportTournamentDetails" class="action"  raised/>
-  </div>
 
   <div class="form-container flex flex-wrap justify-content-between">
     <div class="section-title">General Info</div>

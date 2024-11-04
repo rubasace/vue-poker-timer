@@ -247,6 +247,7 @@ main
 
   .level-name
     position: relative
+    margin-bottom: 1em
 
     .controls
       //font-size: 0.4em
