@@ -381,7 +381,7 @@ main
       font-size: 0.6em
 
       .aside
-        font-size: 1em
+        font-size: 1.3em
 
 
 </style>
