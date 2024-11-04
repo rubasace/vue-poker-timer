@@ -15,6 +15,15 @@ const remainingPlayers = computed(() => {
   return entriesStore.remainingPlayers.toLocaleString() + ' / ' + entriesStore.entries.toLocaleString()
 })
 
+const toggleIcon = computed(() => {
+  if (timerStore.active) {
+    return '⏸'
+  } else {
+    return '▶'
+  }
+})
+
+
 function resetEntries() {
   confirm.require({
     message: 'This will clear all registered actions on the tournament. Do you want to proceed?',
@@ -103,6 +112,9 @@ function resetEntries() {
 </template>
 
 <style scoped lang="sass">
+
+@import "@/assets/variables"
+
 .settings-form
   .section
     display: flex
@@ -140,6 +152,7 @@ function resetEntries() {
 
   .danger
     position: relative
+
 
 @media (max-width: 820px)
   .settings-form

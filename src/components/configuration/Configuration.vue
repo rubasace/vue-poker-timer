@@ -10,12 +10,16 @@ import TournamentDetailsConfiguration from "@/components/configuration/Tournamen
       <TabList>
         <Tab value="0">Tournament Details</Tab>
         <Tab value="1">Live Actions</Tab>
+<!--        <Tab value="2">Clock Configuration</Tab>-->
       </TabList>
       <TabPanels>
         <TabPanel value="0">
           <TournamentDetailsConfiguration/>
         </TabPanel>
         <TabPanel value="1">
+          <EntriesConfiguration/>
+        </TabPanel>
+        <TabPanel value="2">
           <EntriesConfiguration/>
         </TabPanel>
       </TabPanels>

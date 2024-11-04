@@ -125,7 +125,7 @@ function checkForOldData() {
 }
 
 watch(idleMouse, idle => {
-  if(idle){
+  if (idle) {
     document.body.style.cursor = "none"
   } else {
     document.body.style.cursor = "unset"
@@ -137,7 +137,6 @@ onMounted(() => {
 });
 
 </script>
-
 
 <template>
   <main>
@@ -156,7 +155,9 @@ onMounted(() => {
         <div class="tournament primary">{{ tournamentInfoStore.tournamentName }}</div>
       </div>
       <div class="level-name">
-        <span class="current-level-name secondary" v-visible="tournamentInfoStore.currentLevelNumber">Level {{ tournamentInfoStore.currentLevelNumber }}</span>
+        <span class="controls decrease-button" @click="timerStore.reduceLevel()">▼</span>
+        <span class="current-level-name secondary"> {{ tournamentInfoStore.currentLevelNumber ? `Level ${tournamentInfoStore.currentLevelNumber}` : `Break` }}</span>
+        <span class="controls increase-button" @click="timerStore.incrementLevel()">▲</span>
       </div>
       <div class="timer">
         <Clock class="clock" ref="clock"/>
@@ -203,8 +204,8 @@ onMounted(() => {
     border-right: $border-width solid $border-color
 
 
-$primary-color: #0b5404
-$secondary-color: #d46f00
+@import "assets/variables"
+
 main
   width: 100%
   height: 90vh
@@ -243,6 +244,31 @@ main
     align-items: center
     justify-content: space-around
     font-size: 1em
+
+  .level-name
+    position: relative
+
+    .controls
+      //font-size: 0.4em
+      background: none
+      border: none
+      cursor: pointer
+      color: $primary-color
+      margin: 0.5em
+      visibility: hidden
+
+      &.increase-button
+        top: -1.2em
+
+      &.decrease-button
+        bottom: -1.2em
+
+      &:hover
+        color: $secondary-color
+
+    &:hover
+      .controls
+        visibility: visible
 
   .central-panel
     flex: 1
@@ -292,6 +318,7 @@ main
         color: $secondary-color
         margin-top: 0.3em
         font-size: 3.5em
+
         span
           font-weight: 600
 
@@ -334,11 +361,14 @@ main
   main
     font-size: 1.6em
     flex-wrap: wrap
+
     .central-panel
       margin-bottom: 1em
       flex-basis: 100%
+
       .timer
         @include bordered-lines($primary-color)
+
     .aside
       order: 2
       flex-basis: 50%
@@ -350,10 +380,9 @@ main
   @media (max-width: 700px)
     main
       font-size: 0.6em
+
       .aside
         font-size: 1em
-
-
 
 
 </style>

@@ -1,8 +1,9 @@
 import {defineStore} from 'pinia'
 import {useLocalStorage} from '@vueuse/core'
-import {nextTick, onBeforeMount, onBeforeUnmount, onMounted, watch} from 'vue'
+import {computed, nextTick, onBeforeMount, onBeforeUnmount, onMounted, watch} from 'vue'
 import {useTournamentInfoStore} from "@/stores/tournamentInfoStore.js"
 import {useLeaderStore} from "@/stores/leaderStore.js";
+import {extractClockParts, formatClockValue} from "@/util/formatUtils.js";
 
 export const useTimerStore = defineStore('timerStore', () => {
     const levelIndex = useLocalStorage('vue-poker-timer-level-index', 0)
@@ -10,6 +11,13 @@ export const useTimerStore = defineStore('timerStore', () => {
     const tournamentStartTime = useLocalStorage('vue-poker-timer-tournament-start-time', 0)
     const active = useLocalStorage('vue-poker-timer-tournament-start-time', false)
 
+    const clockValue = computed(() => {
+        return formatClockValue(levelTimer.value)
+    })
+
+    const clockParts = computed(() => {
+        return extractClockParts(levelTimer.value)
+    });
 
     let timer = null
 
@@ -54,11 +62,7 @@ export const useTimerStore = defineStore('timerStore', () => {
     }
 
     const reduceSeconds = (seconds) => {
-        levelTimer.value -= seconds
-    }
-
-    const stopCountDownTimer = () => {
-        clearTimeout(timer)
+        levelTimer.value =  Math.max(levelTimer.value - seconds, 0)
     }
 
     const toggle = () => {
@@ -94,13 +98,13 @@ export const useTimerStore = defineStore('timerStore', () => {
     })
 
     onBeforeMount(() => {
-        if(levelTimer.value === -1) {
+        if (levelTimer.value === -1) {
             levelTimer.value = calculateLevelSeconds()
         }
     })
 
     onBeforeUnmount(() => {
-        stopCountDownTimer()
+        clearTimeout(timer)
     })
 
     return {
@@ -108,6 +112,8 @@ export const useTimerStore = defineStore('timerStore', () => {
         levelTimer,
         tournamentStartTime,
         active,
+        clockValue,
+        clockParts,
         reduceLevel,
         incrementLevel,
         addSeconds,

@@ -2,7 +2,6 @@
 
 import {computed, watch} from "vue";
 import {useTimerStore} from "@/stores/timerStore.js";
-import {formatClockValue} from "@/util/formatUtils.js";
 import newLevelSound from "@/assets/sounds/nuevo_cambio_de_nivel.wav";
 import {useLeaderStore} from "@/stores/leaderStore.js";
 
@@ -11,9 +10,6 @@ const leaderStore = useLeaderStore()
 
 const newLevelAudio = new Audio(newLevelSound);
 
-const clockValue = computed(() => {
-  return formatClockValue(timerStore.levelTimer)
-})
 
 const toggleIcon = computed(() => {
   if (timerStore.active) {
@@ -36,36 +32,56 @@ watch(levelTimer, (newVal) => {
 </script>
 <template>
   <div class="clock">
-    <div class="value">{{ clockValue }}</div>
-    <div class="controls">
-      <div class="previous" @click="timerStore.reduceLevel">‹</div>
-      <div class="previous" @click="timerStore.reduceSeconds(60)">-1</div>
-      <div class="toggle" @click="timerStore.toggle()">{{ toggleIcon }}</div>
-      <div class="previous" @click="timerStore.addSeconds(60)">+1</div>
-      <div class="next" @click="timerStore.incrementLevel">›</div>
+    <div class="paused-message" v-if="!timerStore.active">
+      Clock Paused
+    </div>
+    <div class="value">
+      <div class="time-part" v-if="timerStore.clockParts.hours">
+        <span class="controls increase-button" @click="timerStore.addSeconds(3600)">▲</span>
+        <span class="hours">{{ timerStore.clockParts.hours.toString().padStart(2, '0') }}</span>
+        <span class="controls decrease-button" @click="timerStore.reduceSeconds(3600)">▼</span>
+      </div>
+      <div class="time-part separator" v-if="timerStore.clockParts.hours">
+        <span>:</span>
+      </div>
+
+      <div class="time-part">
+        <span class="controls increase-button" @click="timerStore.addSeconds(60)">▲</span>
+        <span class="minutes">{{ timerStore.clockParts.minutes.toString().padStart(2, '0') }}</span>
+        <span class="controls decrease-button" @click="timerStore.reduceSeconds(60)">▼</span>
+      </div>
+
+      <div class="time-part separator">
+        <span class="controls toggle" @click="timerStore.toggle()">{{ toggleIcon }}</span>
+        <span>:</span>
+      </div>
+
+
+      <div class="time-part">
+        <span class="controls increase-button" @click="timerStore.addSeconds(1)">▲</span>
+        <span class="seconds">{{ timerStore.clockParts.seconds.toString().padStart(2, '0') }}</span>
+        <span class="controls decrease-button" @click="timerStore.reduceSeconds(1)">▼</span>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="sass">
-$highlight-color: #04479c
+
+@import "../assets/variables"
+
 .clock
   font-size: 1em
-  text-shadow: 10px 10px 10px #1e1e1e
   position: relative
 
-  .controls
-    visibility: hidden
-    backdrop-filter: blur(10px)
+  .paused-message
+    font-size: 0.55em
+    line-height: 0.7em
     position: absolute
-    margin: auto
-    top: 0
-    bottom: 0
+    top: 1em
+    padding: 0.5em
     width: 100%
-    display: flex
-    flex-direction: row
-    align-items: center
-    justify-content: center
+    background-color: rgba($primary-color, 0.85)
 
     div
       display: inline-block
@@ -73,15 +89,46 @@ $highlight-color: #04479c
       font-size: 0.6em
       margin: auto auto
       vertical-align: center
-      text-shadow: 10px 10px 10px #1e1e1e
 
       &:hover
         cursor: pointer
-        color: $highlight-color
+        color: $primary-color
 
   .value
-    font-weight: 700
-  &:hover
-    .controls
-      visibility: visible
+    display: flex
+    align-items: center
+
+    .time-part
+      display: flex
+      flex-direction: column
+      align-items: center
+      margin: 0
+
+      span
+        font-weight: 700
+
+      .controls
+        font-size: 0.4em
+        background: none
+        border: none
+        cursor: pointer
+        color: $primary-color
+        position: absolute
+        visibility: hidden
+
+        &.toggle
+          font-size: 0.8em
+
+        &.increase-button
+          top: -1.2em
+
+        &.decrease-button
+          bottom: -1.2em
+
+        &:hover
+          color: $secondary-color
+
+      &:hover
+        .controls
+          visibility: visible
 </style>
