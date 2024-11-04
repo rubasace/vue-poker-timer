@@ -4,23 +4,27 @@ import {ref} from "vue";
 import {useEntriesStore} from "@/stores/entriesStore.js";
 import {useTimerStore} from "@/stores/timerStore.js";
 import {useConfirm} from "primevue/useconfirm";
+import {useThemeStore} from "@/stores/themeStore.js";
 
 const tournamentInfoStore = useTournamentInfoStore();
 const entriesStore = useEntriesStore()
 const timerStore = useTimerStore()
+const themeStore = useThemeStore()
 const confirm = useConfirm()
 
 const details = "Tournament Details";
 const timerStatus = "Timer Status";
 const liveActions = "Live Actions";
+const theme = "Theme";
 
 const exportableData = ref([
   {name: details, key: "TD"},
   {name: liveActions, key: "LA"},
-  {name: timerStatus, key: "TS"}
+  {name: timerStatus, key: "TS"},
+  {name: theme, key: "TH"}
 ]);
 
-const selectedExportableData = ref([details, liveActions, timerStatus]);
+const selectedExportableData = ref([details, liveActions, timerStatus, theme]);
 
 const fileInput = ref(null);
 
@@ -35,6 +39,9 @@ function exportTournamentDetails() {
     timerStatus: {
       ...selectedExportableData.value.includes(timerStatus) ? timerStore.$state : {}
     },
+    theme: {
+      ...selectedExportableData.value.includes(theme) ? themeStore.$state : {}
+    }
   }
   const json = JSON.stringify(tournamentDetails, null, 2)
   const blob = new Blob([json], {type: 'application/json'})
@@ -65,6 +72,9 @@ function importTournamentDetails(event) {
       }
       if (selectedExportableData.value.includes(timerStatus)) {
         timerStore.$patch(data?.timerStatus);
+      }
+      if (selectedExportableData.value.includes(theme)) {
+        themeStore.$patch(data?.theme);
       }
     }
 

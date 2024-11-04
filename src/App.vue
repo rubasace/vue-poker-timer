@@ -204,8 +204,6 @@ onMounted(() => {
     border-right: $border-width solid $border-color
 
 
-@import "assets/variables"
-
 main
   width: 100%
   height: 90vh
@@ -234,7 +232,7 @@ main
 
       &:hover
         cursor: pointer
-        color: $primary-color
+        color: var(--c-primary-color)
 
   .aside
     padding: 0
@@ -254,7 +252,7 @@ main
       background: none
       border: none
       cursor: pointer
-      color: $primary-color
+      color: var(--c-primary-color)
       margin: 0.5em
       visibility: hidden
 
@@ -265,7 +263,7 @@ main
         bottom: -1.2em
 
       &:hover
-        color: $secondary-color
+        color: var(--c-secondary-color)
 
     &:hover
       .controls
@@ -289,7 +287,7 @@ main
         flex-grow: 0
 
     .timer
-      @include bordered-lines($primary-color)
+      @include bordered-lines(var(--c-primary-color))
       position: relative
       text-align: center
       width: 100%
@@ -316,7 +314,7 @@ main
           font-size: 1.1em
 
       .break
-        color: $secondary-color
+        color: var(--c-secondary-color)
         margin-top: 0.3em
         font-size: 3.5em
 
@@ -329,10 +327,10 @@ main
       width: 100%
 
 .primary, :deep(.primary)
-  color: $primary-color
+  color: var(--c-primary-color)
 
 .secondary, :deep(.secondary)
-  color: $secondary-color
+  color: var(--c-secondary-color)
 
 @media (max-width: 1900px)
   main
@@ -368,7 +366,7 @@ main
       flex-basis: 100%
 
       .timer
-        @include bordered-lines($primary-color)
+        @include bordered-lines(var(--c-primary-color))
 
     .aside
       order: 2

@@ -81,8 +81,6 @@ const remainingPlayers = computed(() => {
 
 <style scoped lang="sass">
 
-@import "@/assets/variables"
-
 .settings-form
   .section
     display: flex

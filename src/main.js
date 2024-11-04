@@ -26,11 +26,12 @@ import Checkbox from 'primevue/checkbox';
 import Card from 'primevue/card';
 import ConfirmDialog from 'primevue/confirmdialog';
 import FileUpload from 'primevue/fileupload';
+import ColorPicker from 'primevue/colorpicker';
 
 
 
 import ConfirmationService from 'primevue/confirmationservice';
-
+import {useThemeStore} from "@/stores/themeStore.js";
 
 const app = createApp(App)
 
@@ -50,6 +51,7 @@ app.component('Checkbox', Checkbox);
 app.component('Card', Card);
 app.component('ConfirmDialog', ConfirmDialog);
 app.component('FileUpload', FileUpload);
+app.component('ColorPicker', ColorPicker);
 
 app.use(PrimeVue, {
     theme: {
@@ -64,6 +66,9 @@ app.use(PrimeVue, {
 
 app.use(ConfirmationService);
 app.use(createPinia())
+
+//Done like this so themes get loaded at startup
+const themeStore = useThemeStore()
 
 // Register the v-visible directive globally
 app.directive('visible', {

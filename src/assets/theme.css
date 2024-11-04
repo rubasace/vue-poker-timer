@@ -1,0 +1,12 @@
+:root {
+    --c-primary-color: #0b5404;
+    --c-secondary-color: #d46f00;
+}
+
+.primary {
+    color: var(--c-primary-color);
+}
+
+.secondary {
+    color: var(--c-secondary-color);
+}

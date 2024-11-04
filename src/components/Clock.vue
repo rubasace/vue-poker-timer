@@ -33,7 +33,7 @@ watch(levelTimer, (newVal) => {
 <template>
   <div class="clock">
     <div class="paused-message" v-if="!timerStore.active">
-      Clock Paused
+      <span>Clock Paused</span>
     </div>
     <div class="value">
       <div class="time-part" v-if="timerStore.clockParts.hours">
@@ -66,8 +66,7 @@ watch(levelTimer, (newVal) => {
 </template>
 
 <style scoped lang="sass">
-
-@import "../assets/variables"
+@use "sass:color"
 
 .clock
   font-size: 1em
@@ -80,7 +79,20 @@ watch(levelTimer, (newVal) => {
     top: 1em
     padding: 0.5em
     width: 100%
-    background-color: rgba($primary-color, 0.85)
+    span
+      position: relative
+      z-index: 1
+      color: white
+    &::before
+      content: ""
+      position: absolute
+      top: 0
+      left: 0
+      right: 0
+      bottom: 0
+      pointer-events: none
+      background-color: var(--c-primary-color)
+      opacity: 0.8
 
     div
       display: inline-block
@@ -91,7 +103,7 @@ watch(levelTimer, (newVal) => {
 
       &:hover
         cursor: pointer
-        color: $primary-color
+        color: var(--c-primary-color)
 
   .value
     display: flex
@@ -111,7 +123,7 @@ watch(levelTimer, (newVal) => {
         background: none
         border: none
         cursor: pointer
-        color: $primary-color
+        color: var(--c-primary-color)
         position: absolute
         visibility: hidden
 
@@ -125,7 +137,7 @@ watch(levelTimer, (newVal) => {
           bottom: -1em
 
         &:hover
-          color: $secondary-color
+          color: var(--c-secondary-color)
 
       &:hover
         .controls
