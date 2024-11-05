@@ -24,7 +24,7 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
             default: textColor
         },
         clockSeparator: {
-            default: defaultPrimaryColor
+            default: textColor
         },
         blindsTitle: {
             default: defaultSecondaryColor

@@ -218,6 +218,7 @@ main
   font-size: 1.8rem
   font-family: 'Chivo Mono Variable', monospace
 
+
   .settings-bar
     position: fixed
     top: 0
@@ -382,5 +383,22 @@ main
       .aside
         font-size: 1.3em
 
+  @media (max-height: 1400px)
+    main
+      font-size: 1em
+      .aside
+        font-size: 1.3em
+
+  @media (max-height: 920px)
+    main
+      font-size: 0.8em
+
+  @media (max-height: 750px)
+    main
+      font-size: 0.6em
+
+  @media (max-height: 750px)
+    main
+      font-size: 0.5em
 
 </style>
