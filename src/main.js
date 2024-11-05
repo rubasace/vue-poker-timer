@@ -26,7 +26,7 @@ import Checkbox from 'primevue/checkbox';
 import Card from 'primevue/card';
 import ConfirmDialog from 'primevue/confirmdialog';
 import FileUpload from 'primevue/fileupload';
-import ColorPicker from 'primevue/colorpicker';
+import { ColorPicker } from '@miharakinu/vue3-color-picker';
 
 
 

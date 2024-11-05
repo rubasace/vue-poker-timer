@@ -24,13 +24,15 @@ function resetCustomization() {
 </script>
 
 <template>
-  <div v-for="(color, key) in customizationStore.paletteColors" :key="key" class="p-field p-fluid">
-    <label :for="`${key}Color`">{{ key.charAt(0).toUpperCase() + key.slice(1) }} Color</label>
-    <ColorPicker
-        :id="`${key}Color`"
-        v-model="customizationStore.paletteColors[key]"
-        format="hex"
-    />
+
+  <div class="form-container flex flex-wrap gap-2">
+    <div v-for="(color, key) in customizationStore.paletteColors" :key="key" class="p-field">
+      <label class="label" :for="`${key}Color`">{{ key.charAt(0).toUpperCase() + key.slice(1) }} Color</label>
+      <input type="color" class="color-picker"
+                   :id="`${key}Color`"
+                   v-model="customizationStore.paletteColors[key]"
+      />
+    </div>
   </div>
 
   <div class="danger section">
@@ -40,16 +42,42 @@ function resetCustomization() {
 
 <style scoped lang="sass">
 .p-field
-  width: 48%
-  min-width: 200px
+  width: 32%
   display: flex
-  flex-direction: column
+  flex-direction: row
+  align-items: center
+  justify-content: start
   margin-top: 1em
+  .label
+    width: 13em
+  .color-picker
+    $size: 1.8em
+    width: $size
+    height: $size
+    margin: 0
+    padding: 0
+    -webkit-appearance: none
+    -moz-appearance: none
+    appearance: none
+    background-color: transparent
+    border: none
+    cursor: pointer
+
+    &::-webkit-color-swatch-wrapper
+      padding: 0
+      border-radius: 15px
+      border: none
+
+    &::-moz-color-swatch
+      border-radius: 15px
+      border: 3px solid #000
+
 .section-title
   width: 100%
   margin-top: 1em
   font-weight: bold
   font-size: 1.2em
+
 .danger
   position: relative
   text-align: center

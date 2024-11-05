@@ -140,6 +140,7 @@ const currencies = [
   display: flex
   flex-direction: column
   margin-top: 1em
+
 .section-title
   width: 100%
   margin-top: 1em
