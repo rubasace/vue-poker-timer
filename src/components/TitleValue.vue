@@ -8,7 +8,7 @@ const props = defineProps<{
 </script>
 <template>
   <div class="title-value">
-    <span class="text secondary">{{ title }}</span>
+    <span class="text">{{ title }}</span>
     <div class="value">{{ value }}</div>
   </div>
 </template>
@@ -26,9 +26,11 @@ const props = defineProps<{
 
   .text
     font-weight: 500
+    color: var(--c-info-title-color)
 
   .value
     font-size: 2.5em
     font-weight: 600
+    color: var(--c-info-value-color)
 
 </style>

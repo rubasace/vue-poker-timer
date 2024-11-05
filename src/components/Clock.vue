@@ -38,27 +38,27 @@ watch(levelTimer, (newVal) => {
     <div class="value">
       <div class="time-part" v-if="timerStore.clockParts.hours">
         <span class="controls increase-button" @click="timerStore.addSeconds(3600)">▲</span>
-        <span class="hours">{{ timerStore.clockParts.hours.toString().padStart(2, '0') }}</span>
+        <span class="hours number">{{ timerStore.clockParts.hours.toString().padStart(2, '0') }}</span>
         <span class="controls decrease-button" @click="timerStore.reduceSeconds(3600)">▼</span>
       </div>
-      <div class="time-part separator" v-if="timerStore.clockParts.hours">
-        <span>:</span>
+      <div class="time-part" v-if="timerStore.clockParts.hours">
+        <span class="separator">:</span>
       </div>
 
       <div class="time-part">
         <span class="controls increase-button" @click="timerStore.addSeconds(60)">▲</span>
-        <span class="minutes">{{ timerStore.clockParts.minutes.toString().padStart(2, '0') }}</span>
+        <span class="minutes number">{{ timerStore.clockParts.minutes.toString().padStart(2, '0') }}</span>
         <span class="controls decrease-button" @click="timerStore.reduceSeconds(60)">▼</span>
       </div>
 
-      <div class="time-part separator">
+      <div class="time-part">
         <span class="controls toggle" @click="timerStore.toggle()">{{ toggleIcon }}</span>
-        <span>:</span>
+        <span class="separator">:</span>
       </div>
 
       <div class="time-part">
         <span class="controls increase-button" @click="timerStore.addSeconds(1)">▲</span>
-        <span class="seconds">{{ timerStore.clockParts.seconds.toString().padStart(2, '0') }}</span>
+        <span class="seconds number">{{ timerStore.clockParts.seconds.toString().padStart(2, '0') }}</span>
         <span class="controls decrease-button" @click="timerStore.reduceSeconds(1)">▼</span>
       </div>
     </div>
@@ -103,7 +103,7 @@ watch(levelTimer, (newVal) => {
 
       &:hover
         cursor: pointer
-        color: var(--c-primary-color)
+        color: var(--c-hover-color)
 
   .value
     display: flex
@@ -115,6 +115,12 @@ watch(levelTimer, (newVal) => {
       align-items: center
       margin: 0
 
+      .number
+        color: var(--c-clock-number-color)
+
+      .separator
+        color: var(--c-clock-separator-color)
+
       span
         font-weight: 700
 
@@ -123,7 +129,7 @@ watch(levelTimer, (newVal) => {
         background: none
         border: none
         cursor: pointer
-        color: var(--c-primary-color)
+        color: var(--c-controls-color)
         position: absolute
         visibility: hidden
 
@@ -137,7 +143,7 @@ watch(levelTimer, (newVal) => {
           bottom: -1em
 
         &:hover
-          color: var(--c-secondary-color)
+          color: var(--c-hover-color)
 
       &:hover
         .controls

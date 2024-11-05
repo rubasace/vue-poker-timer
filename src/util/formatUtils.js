@@ -7,7 +7,7 @@ export function formatClockValue(timeInSeconds) {
     return `${hoursPart}${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
-export function extractClockParts(timeInSeconds){
+export function extractClockParts(timeInSeconds) {
     const hours = Math.floor(timeInSeconds / 3600);
     const minutes = Math.floor(timeInSeconds / 60) - hours * 60;
     const seconds = timeInSeconds - hours * 3600 - minutes * 60;
@@ -16,4 +16,8 @@ export function extractClockParts(timeInSeconds){
         minutes,
         seconds
     }
+}
+
+export function camelcaseToHyphenSeparated(text) {
+    return text.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }

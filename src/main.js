@@ -31,7 +31,7 @@ import ColorPicker from 'primevue/colorpicker';
 
 
 import ConfirmationService from 'primevue/confirmationservice';
-import {useThemeStore} from "@/stores/themeStore.js";
+import {useCustomizationStore} from "@/stores/customizationStore.js";
 
 const app = createApp(App)
 
@@ -68,7 +68,7 @@ app.use(ConfirmationService);
 app.use(createPinia())
 
 //Done like this so themes get loaded at startup
-const themeStore = useThemeStore()
+const customizationStore = useCustomizationStore()
 
 // Register the v-visible directive globally
 app.directive('visible', {

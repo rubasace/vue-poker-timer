@@ -1,13 +1,13 @@
 <script setup>
-import {useThemeStore} from "@/stores/themeStore.js";
+import {useCustomizationStore} from "@/stores/customizationStore.js";
 import {useConfirm} from "primevue/useconfirm";
 
 const confirm = useConfirm()
-const themeStore = useThemeStore()
+const customizationStore = useCustomizationStore()
 
-function resetTheme() {
+function resetCustomization() {
   confirm.require({
-    message: 'Do you want to load the original theme? Your theme will be lost',
+    message: 'Do you want to load the original customization? Your changes will be lost',
     header: 'Confirmation',
     icon: 'pi pi-exclamation-triangle',
     rejectProps: {
@@ -16,7 +16,7 @@ function resetTheme() {
       outlined: true
     },
     accept: () => {
-      themeStore.resetStore()
+      customizationStore.resetStore()
     }
   })
 }
@@ -24,25 +24,17 @@ function resetTheme() {
 </script>
 
 <template>
-  <div class="p-field p-fluid">
-    <label for="primaryColor">Primary Color</label>
+  <div v-for="(color, key) in customizationStore.paletteColors" :key="key" class="p-field p-fluid">
+    <label :for="`${key}Color`">{{ key.charAt(0).toUpperCase() + key.slice(1) }} Color</label>
     <ColorPicker
-        id="primaryColor"
-        v-model="themeStore.primaryColor"
-        format="hex"
-    />
-  </div>
-  <div class="p-field p-fluid">
-    <label for="secondaryColor">Secondary Color</label>
-    <ColorPicker
-        id="secondaryColor"
-        v-model="themeStore.secondaryColor"
+        :id="`${key}Color`"
+        v-model="customizationStore.paletteColors[key]"
         format="hex"
     />
   </div>
 
   <div class="danger section">
-    <Button label="Reset Theme" icon="pi pi-history" @click="resetTheme()" severity="danger"/>
+    <Button label="Reset Customization" icon="pi pi-history" @click="resetCustomization()" severity="danger"/>
   </div>
 </template>
 

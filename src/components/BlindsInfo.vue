@@ -11,7 +11,7 @@ const props = defineProps<{
 <template>
   <div class="blinds-info">
     <div class="blinds">
-      <span class="title secondary">Blinds</span>
+      <span class="title">Blinds</span>
       <div class="value">
         <span class="small-blind">{{ smallBlind }}</span>
         <span class="separator">/</span>
@@ -19,7 +19,7 @@ const props = defineProps<{
       </div>
     </div>
     <div class="ante" v-if="ante">
-      <span class="title secondary">Ante</span>
+      <span class="title">Ante</span>
       <div class="value">
         <span class="ante">{{ ante }}</span>
       </div>
@@ -33,8 +33,11 @@ const props = defineProps<{
   display: flex
   justify-content: space-around
   line-height: 2em
+  .title
+    color: var(--c-blinds-title-color)
   .value
     span
+      color: var(--c-blinds-value-color)
       font-size: 1.7em
       font-weight: 600
 </style>

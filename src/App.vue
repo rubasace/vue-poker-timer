@@ -151,12 +151,12 @@ onMounted(() => {
     </div>
     <div class="central-panel">
       <div class="header">
-        <div class="series secondary" v-if="tournamentInfoStore.tournamentSeries">{{ tournamentInfoStore.tournamentSeries }}</div>
-        <div class="tournament primary">{{ tournamentInfoStore.tournamentName }}</div>
+        <div class="series" v-if="tournamentInfoStore.tournamentSeries">{{ tournamentInfoStore.tournamentSeries }}</div>
+        <div class="tournament">{{ tournamentInfoStore.tournamentName }}</div>
       </div>
       <div class="level-name">
         <span class="controls decrease-button" @click="timerStore.reduceLevel()">▼</span>
-        <span class="current-level-name secondary"> {{ tournamentInfoStore.currentLevelNumber ? `Level ${tournamentInfoStore.currentLevelNumber}` : `Break` }}</span>
+        <span class="current-level-name"> {{ tournamentInfoStore.currentLevelNumber ? `Level ${tournamentInfoStore.currentLevelNumber}` : `Break` }}</span>
         <span class="controls increase-button" @click="timerStore.incrementLevel()">▲</span>
       </div>
       <div class="timer">
@@ -232,7 +232,7 @@ main
 
       &:hover
         cursor: pointer
-        color: var(--c-primary-color)
+        color: var(--c-hover-color)
 
   .aside
     padding: 0
@@ -241,18 +241,20 @@ main
     flex-direction: column
     align-items: center
     justify-content: space-around
-    font-size: 1.3em
+    font-size: 1em
 
   .level-name
     position: relative
     margin-bottom: 1em
 
+    .current-level-name
+      color: var(--c-level-color)
+
     .controls
-      //font-size: 0.4em
       background: none
       border: none
       cursor: pointer
-      color: var(--c-primary-color)
+      color: var(--c-controls-color)
       margin: 0.5em
       visibility: hidden
 
@@ -263,7 +265,7 @@ main
         bottom: -1.2em
 
       &:hover
-        color: var(--c-secondary-color)
+        color: var(--c-hover-color)
 
     &:hover
       .controls
@@ -277,6 +279,11 @@ main
     justify-content: space-around
     font-size: 2em
     gap: 1em
+
+    .series
+      color: var(--c-series-color)
+    .tournament
+      color: var(--c-tournament-color)
 
     .header
       text-align: center
@@ -325,6 +332,7 @@ main
       flex-grow: 0
       font-size: 0.8em
       width: 100%
+      color: var(--c-next-level-color)
 
 .primary, :deep(.primary)
   color: var(--c-primary-color)
@@ -336,7 +344,7 @@ main
   main
     font-size: 1.5em
 
-@media (max-width: 1440px)
+@media (max-width: 1450px)
   main
     font-size: 1.3em
 
