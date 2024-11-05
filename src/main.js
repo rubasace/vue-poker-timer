@@ -3,10 +3,10 @@ import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'
 
 
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
-import { createPinia } from 'pinia'
+import {createPinia} from 'pinia'
 import App from './App.vue'
 
 
@@ -26,8 +26,6 @@ import Checkbox from 'primevue/checkbox';
 import Card from 'primevue/card';
 import ConfirmDialog from 'primevue/confirmdialog';
 import FileUpload from 'primevue/fileupload';
-import { ColorPicker } from '@miharakinu/vue3-color-picker';
-
 
 
 import ConfirmationService from 'primevue/confirmationservice';
@@ -51,7 +49,6 @@ app.component('Checkbox', Checkbox);
 app.component('Card', Card);
 app.component('ConfirmDialog', ConfirmDialog);
 app.component('FileUpload', FileUpload);
-app.component('ColorPicker', ColorPicker);
 
 app.use(PrimeVue, {
     theme: {
