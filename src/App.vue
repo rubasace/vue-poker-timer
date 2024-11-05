@@ -294,7 +294,7 @@ main
         flex-grow: 0
 
     .timer
-      @include bordered-lines(var(--c-primary-color))
+      @include bordered-lines(var(--c-decoration-lines-color))
       position: relative
       text-align: center
       width: 100%
@@ -334,12 +334,6 @@ main
       width: 100%
       color: var(--c-next-level-color)
 
-.primary, :deep(.primary)
-  color: var(--c-primary-color)
-
-.secondary, :deep(.secondary)
-  color: var(--c-secondary-color)
-
 @media (max-width: 1900px)
   main
     font-size: 1.5em
@@ -372,9 +366,6 @@ main
     .central-panel
       margin-bottom: 1em
       flex-basis: 100%
-
-      .timer
-        @include bordered-lines(var(--c-primary-color))
 
     .aside
       order: 2

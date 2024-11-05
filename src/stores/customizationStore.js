@@ -8,7 +8,7 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
     const defaultPrimaryColor = '#0b5404'
     const defaultSecondaryColor = '#d46f00'
     const defaultHighlightColor = '#bd34fe'
-    const whiteColor = '#ffffff';
+    const textColor = '#ffffff';
 
     const colorPalette = {
         series: {
@@ -21,7 +21,7 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
             default: defaultSecondaryColor
         },
         clockNumber: {
-            default: whiteColor
+            default: textColor
         },
         clockSeparator: {
             default: defaultPrimaryColor
@@ -30,16 +30,22 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
             default: defaultSecondaryColor
         },
         blindsValue: {
-            default: whiteColor
+            default: textColor
         },
         infoTitle: {
             default: defaultSecondaryColor
         },
         infoValue: {
-            default: whiteColor
+            default: textColor
         },
         nextLevel: {
-            default: whiteColor
+            default: textColor
+        },
+        pausedBox: {
+            default: defaultPrimaryColor
+        },
+        decorationLines: {
+            default: defaultPrimaryColor
         },
         controls: {
             default: defaultHighlightColor

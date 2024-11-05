@@ -91,7 +91,7 @@ watch(levelTimer, (newVal) => {
       right: 0
       bottom: 0
       pointer-events: none
-      background-color: var(--c-primary-color)
+      background-color: var(--c-paused-box-color)
       opacity: 0.8
 
     div
