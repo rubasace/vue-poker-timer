@@ -241,7 +241,7 @@ main
     flex-direction: column
     align-items: center
     justify-content: space-around
-    font-size: 1em
+    font-size: 1.3em
 
   .level-name
     position: relative
