@@ -1,9 +1,23 @@
-<script setup>
+<script setup xmlns="http://www.w3.org/1999/html">
 import {useCustomizationStore} from "@/stores/customizationStore.js";
 import {useConfirm} from "primevue/useconfirm";
+import {ref} from "vue";
 
 const confirm = useConfirm()
 const customizationStore = useCustomizationStore()
+
+const fileInput = ref(null);
+
+function openFilePicker() {
+  fileInput.value.choose()
+}
+
+function uploadNewLevelSound(event) {
+  const file = event.files[0];
+  if (file) {
+    customizationStore.setNewLevelSound(file)
+  }
+}
 
 function resetCustomization() {
   confirm.require({
@@ -29,18 +43,42 @@ function resetCustomization() {
     <div v-for="(color, key) in customizationStore.paletteColors" :key="key" class="p-field">
       <label class="label" :for="`${key}Color`">{{ key.charAt(0).toUpperCase() + key.slice(1) }} Color</label>
       <input type="color" class="color-picker"
-                   :id="`${key}Color`"
-                   v-model="customizationStore.paletteColors[key]"
+             :id="`${key}Color`"
+             v-model="customizationStore.paletteColors[key]"
       />
     </div>
+  </div>
+
+  <div class="section-title">Sounds</div>
+
+  <div class="audio-field">
+    <FileUpload
+        ref="fileInput"
+        mode="basic"
+        @select="uploadNewLevelSound"
+        customUpload
+        auto
+        accept="audio/*"
+        style="display: none"
+        :maxFileSize="1000000"
+    />
+
+    <label class="label">New Level</label>
+    <span class="file-name">{{ customizationStore.newLevelFileName }}</span>
+    <Button label="Upload" icon="pi pi-upload" severity="primary" @click="openFilePicker" class="action" raised/>
+
   </div>
 
   <div class="danger section">
     <Button label="Reset Customization" icon="pi pi-history" @click="resetCustomization()" severity="danger"/>
   </div>
+
 </template>
 
 <style scoped lang="sass">
+.label
+  width: 13em
+
 .p-field
   width: 32%
   display: flex
@@ -48,8 +86,7 @@ function resetCustomization() {
   align-items: center
   justify-content: start
   margin-top: 1em
-  .label
-    width: 13em
+
   .color-picker
     $size: 1.8em
     width: $size
@@ -72,11 +109,33 @@ function resetCustomization() {
       border-radius: 15px
       border: 3px solid #000
 
+
+
+.audio-field
+  width: 100%
+  display: flex
+  flex-direction: row
+  align-items: center
+  justify-content: start
+  margin-top: 1em
+  .file-name
+    width: 13em
+    overflow: hidden
+    white-space: nowrap
+    text-overflow: ellipsis
+    margin-right: 1em
+
+  .action
+    font-size: 0.95em
+
+
 .section-title
   width: 100%
   margin-top: 1em
   font-weight: bold
   font-size: 1.2em
+
+
 
 .danger
   position: relative

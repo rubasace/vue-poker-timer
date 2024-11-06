@@ -2,13 +2,12 @@
 
 import {computed, watch} from "vue";
 import {useTimerStore} from "@/stores/timerStore.js";
-import newLevelSound from "@/assets/sounds/nuevo_cambio_de_nivel.wav";
 import {useLeaderStore} from "@/stores/leaderStore.js";
+import {useCustomizationStore} from "@/stores/customizationStore.js";
 
 const timerStore = useTimerStore();
 const leaderStore = useLeaderStore()
-
-const newLevelAudio = new Audio(newLevelSound);
+const customizationStore = useCustomizationStore()
 
 
 const toggleIcon = computed(() => {
@@ -23,9 +22,17 @@ const levelTimer = computed(() => {
   return timerStore.levelTimer
 })
 
+function playSound(audio) {
+  audio.play()
+  setTimeout(() => {
+    audio.pause();
+    audio.currentTime = 0;
+  }, 5000);
+}
+
 watch(levelTimer, (newVal) => {
   if (newVal === 1 && leaderStore.isLeaderTab) {
-    newLevelAudio.play()
+    playSound(customizationStore.newLevelAudio);
   }
 })
 
@@ -79,10 +86,12 @@ watch(levelTimer, (newVal) => {
     top: 1em
     padding: 0.5em
     width: 100%
+
     span
       position: relative
       z-index: 1
       color: white
+
     &::before
       content: ""
       position: absolute

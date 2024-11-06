@@ -1,9 +1,26 @@
 import {defineStore} from 'pinia'
 import {useLocalStorage} from "@vueuse/core";
-import {watch} from "vue";
+import {computed, ref, watch} from "vue";
 import {camelcaseToHyphenSeparated} from "@/util/formatUtils.js";
+import newLevelSoundFile from "@/assets/sounds/nuevo_cambio_de_nivel.wav";
+
+const defaultNewLevelAudio = new Audio(newLevelSoundFile);
 
 export const useCustomizationStore = defineStore('customizationStore', () => {
+
+
+    const defaultSoundFileName = 'defaultNewLevel.mp3';
+
+    const newLevelSoundBase64 = useLocalStorage('vue-poker-timer-new-level-sound', null)
+    const newLevelFileName = useLocalStorage('vue-poker-timer-new-level-file-name', defaultSoundFileName)
+
+    const newLevelAudio = computed(() => {
+        try {
+            return newLevelSoundBase64.value ? new Audio(newLevelSoundBase64.value) : defaultNewLevelAudio
+        } catch (e) {
+            return defaultNewLevelAudio
+        }
+    })
 
     const defaultPrimaryColor = '#0b5404'
     const defaultSecondaryColor = '#d46f00'
@@ -12,7 +29,7 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
 
     const colorPalette = {
         series: {
-          default: defaultSecondaryColor
+            default: defaultSecondaryColor
         },
         tournament: {
             default: defaultPrimaryColor
@@ -69,6 +86,17 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
         })
     );
 
+    function setNewLevelSound(file) {
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+            newLevelSoundBase64.value = event.target.result;
+            newLevelFileName.value = file.name
+        };
+
+        reader.readAsDataURL(file);
+    }
+
 
 
     function updateVariable(variable, color) {
@@ -82,10 +110,21 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
         for (const [key, colorRef] of Object.entries(paletteColors)) {
             colorRef.value = colorPalette[key].default
         }
+        newLevelSoundBase64.value = null
+        newLevelFileName.value = defaultSoundFileName
     }
+
+    watch(newLevelSoundBase64, (value) => {
+        if(!value) {
+            newLevelFileName.value = defaultSoundFileName
+        }
+    })
 
     return {
         paletteColors,
+        newLevelAudio,
+        newLevelFileName,
+        setNewLevelSound,
         resetStore
     }
 })
