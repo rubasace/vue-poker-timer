@@ -222,7 +222,6 @@ main
   .settings-bar
     position: absolute
     top: 0
-    margin: 2em
     width: 100%
     height: 3em
 
