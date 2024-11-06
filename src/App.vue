@@ -376,13 +376,6 @@ main
     main
       font-size: 1.1em
 
-  @media (max-width: 700px)
-    main
-      font-size: 0.6em
-
-      .aside
-        font-size: 1.3em
-
   @media (max-height: 1400px)
     main
       font-size: 1em
@@ -396,6 +389,15 @@ main
   @media (max-height: 750px)
     main
       font-size: 0.6em
+
+  @media (max-width: 700px)
+    main
+      font-size: 0.6em
+
+      .aside
+        font-size: 1.3em
+
+
 
   @media (max-height: 750px)
     main
