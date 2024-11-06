@@ -124,7 +124,7 @@ const reorderLevels = (event) => {
 
     <Column class="w-24 !text-end">
       <template #body="{ data }">
-        <Button icon="pi pi-trash" @click="deleteLevel(data)" severity="secondary" rounded/>
+        <Button class="remove" icon="pi pi-trash" @click="deleteLevel(data)" severity="secondary" rounded/>
       </template>
     </Column>
   </DataTable>
@@ -151,4 +151,7 @@ const reorderLevels = (event) => {
   //TODO revisit float, prob not right
   &.clear
     float: right
+
+.remove
+  color: #bd0202
 </style>
