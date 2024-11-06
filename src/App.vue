@@ -335,29 +335,44 @@ main
       width: 100%
       color: var(--c-next-level-color)
 
-@media (max-width: 1900px)
-  main
-    font-size: 1.5em
+@media (min-height: 350px)
+  @media (max-width: 1900px)
+    main
+      font-size: 1.5em
 
-@media (max-width: 1450px)
-  main
-    font-size: 1.3em
+  @media (max-width: 1450px)
+    main
+      font-size: 1.3em
 
-@media (max-width: 1150px)
-  main
-    font-size: 1.1em
+  @media (max-width: 1150px)
+    main
+      font-size: 1.1em
 
-@media (max-width: 980px)
-  main
-    font-size: 0.9em
+  @media (max-width: 980px)
+    main
+      font-size: 0.9em
 
-@media (max-width: 820px)
-  main
-    font-size: 0.7em
+  @media (max-width: 820px)
+    main
+      font-size: 0.7em
 
-@media (max-width: 650px)
+  @media (max-width: 650px)
+    main
+      font-size: 0.55em
+
+@media (max-height: 449px)
   main
-    font-size: 0.55em
+    font-size: 0.6em
+    .aside
+      font-size: 1.2em
+
+@media (max-height: 350px)
+  main
+    font-size: 0.4em
+
+@media (max-height: 260px)
+  main
+    font-size: 0.3em
 
 @media (orientation: portrait)
   main
@@ -396,8 +411,6 @@ main
 
       .aside
         font-size: 1.3em
-
-
 
   @media (max-height: 750px)
     main
