@@ -84,7 +84,7 @@ function importTournamentDetails(event) {
     }
 
     reader.onerror = (error) => {
-      console.error("Error reading file:", error);
+      toast.add({ severity: 'error', summary: 'Error loading file', detail: `Audio file ${file.name} was not loaded successfully. Error received: ${error.message}`, life: 5000 });
     };
 
     reader.readAsText(file);
