@@ -184,6 +184,7 @@ onMounted(() => {
     <Configuration/>
   </Dialog>
   <ConfirmDialog/>
+  <Toast position="top-left"/>
 </template>
 
 <style lang="sass" scoped>

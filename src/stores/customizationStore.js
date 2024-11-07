@@ -15,7 +15,7 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
         const newLevelFileName = useLocalStorage('vue-poker-timer-new-level-file-name', defaultSoundFileName);
 
         const newLevelAudio = computed(() => {
-            if (noSoundFileName === newLevelFileName.value) {
+            if (!isNewLevelSound()) {
                 return null;
             }
             try {
@@ -25,15 +25,17 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
             }
         });
 
-        const defaultBackgroundSetting = {
-            type: 'gradient',
-            color: '#101010',
-            gradient: 'radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(25,25,25,1) 50%, rgba(0,0,0,1) 100%)',
-            customCSS: 'background: rgb(0,0,0);\n' +
-                'background: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(25,25,25,1) 50%, rgba(0,0,0,1) 100%);'
+        function defaultBackgroundSetting() {
+            return {
+                type: 'gradient',
+                color: '#101010',
+                gradient: 'radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(25,25,25,1) 50%, rgba(0,0,0,1) 100%)',
+                customCSS: 'background: rgb(0,0,0);\n' +
+                    'background: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(25,25,25,1) 50%, rgba(0,0,0,1) 100%);'
+            }
         }
 
-        const backgroundSetting = useLocalStorage('vue-poker-timer-background-setting', defaultBackgroundSetting);
+        const backgroundSetting = useLocalStorage('vue-poker-timer-background-setting', defaultBackgroundSetting());
 
 
         watch(backgroundSetting, (settings) => {
@@ -108,6 +110,10 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
             return colorPalette[colorName].category;
         }
 
+        function isNewLevelSound(){
+            return  noSoundFileName !== newLevelFileName.value;
+        }
+
         function setNewLevelSound(file) {
             const reader = new FileReader();
             reader.onload = function (event) {
@@ -135,7 +141,7 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
             }
             newLevelSoundBase64.value = null;
             newLevelFileName.value = defaultSoundFileName;
-            backgroundSetting.value = defaultBackgroundSetting;
+            backgroundSetting.value = defaultBackgroundSetting();
         }
 
         return {
@@ -143,6 +149,7 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
             newLevelAudio,
             newLevelFileName,
             backgroundSetting,
+            isNewLevelSound,
             setNewLevelSound,
             clearNewLevelSound,
             getCategory,

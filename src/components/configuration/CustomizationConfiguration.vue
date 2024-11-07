@@ -2,9 +2,12 @@
 import {useCustomizationStore} from "@/stores/customizationStore.js";
 import {useConfirm} from "primevue/useconfirm";
 import {computed, ref} from "vue";
+import { useToast } from 'primevue/usetoast';
 
 const confirm = useConfirm()
 const customizationStore = useCustomizationStore()
+
+const toast = useToast();
 
 const fileInput = ref(null);
 
@@ -28,6 +31,8 @@ function uploadNewLevelSound(event) {
   const file = event.files[0];
   if (file) {
     customizationStore.setNewLevelSound(file)
+    toast.add({ severity: 'success', summary: 'File Uploaded', detail: `Audio file ${file.name} uploaded successfully`, life: 5000 });
+
   }
 }
 
@@ -43,9 +48,27 @@ function resetCustomization() {
     },
     accept: () => {
       customizationStore.resetStore()
+      toast.add({ severity: 'success', summary: 'Customizations Reset', detail: `All customizations have been reset to their default values`, life: 5000 });
     }
   })
+}
 
+function clearNewLevelSound() {
+  confirm.require({
+    message: 'Do you want to remove the audio file? You will need to upload it again or reset to the default one if you want to undo the changes',
+    header: 'Confirmation',
+    icon: 'pi pi-exclamation-triangle',
+    rejectProps: {
+      label: 'Cancel',
+      severity: 'secondary',
+      outlined: true
+    },
+    accept: () => {
+      const fileName = customizationStore.newLevelFileName
+      customizationStore.clearNewLevelSound()
+      toast.add({ severity: 'success', summary: 'File removed', detail: `File ${fileName} removed successfully`, life: 5000 });
+    }
+  })
 }
 
 const backgroundTypes = ref([
@@ -106,7 +129,7 @@ const backgroundTypes = ref([
 
     <label class="label">New Level</label>
     <span class="file-name">{{ customizationStore.newLevelFileName }}</span>
-    <Button icon="pi pi-trash" severity="secondary" @click="customizationStore.clearNewLevelSound()" class="action delete" raised/>
+    <Button icon="pi pi-trash" severity="secondary" @click="clearNewLevelSound()" class="action delete" raised v-visible="customizationStore.isNewLevelSound()"/>
     <Button label="Upload" icon="pi pi-upload" severity="primary" @click="openFilePicker" class="action" raised/>
 
   </div>

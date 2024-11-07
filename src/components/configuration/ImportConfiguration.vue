@@ -4,13 +4,16 @@ import {ref} from "vue";
 import {useEntriesStore} from "@/stores/entriesStore.js";
 import {useTimerStore} from "@/stores/timerStore.js";
 import {useConfirm} from "primevue/useconfirm";
+import { useToast } from 'primevue/usetoast';
 import {useCustomizationStore} from "@/stores/customizationStore.js";
 
 const tournamentInfoStore = useTournamentInfoStore();
 const entriesStore = useEntriesStore()
 const timerStore = useTimerStore()
 const customizationStore = useCustomizationStore()
+
 const confirm = useConfirm()
+const toast = useToast();
 
 const details = "Tournament Details";
 const timerStatus = "Timer Status";
@@ -54,6 +57,8 @@ function exportTournamentDetails() {
   a.click()
 
   URL.revokeObjectURL(url)
+
+  toast.add({ severity: 'success', summary: 'Configuration exported successfully', detail: `Downloaded file ${a.download}`, life: 5000 });
 }
 
 function importTournamentDetails(event) {
@@ -83,6 +88,7 @@ function importTournamentDetails(event) {
     };
 
     reader.readAsText(file);
+    toast.add({ severity: 'success', summary: 'Configuration imported successfully', detail: `Loaded content from ${file.name}`, life: 5000 });
   }
 }
 
@@ -103,6 +109,7 @@ function resetEntries() {
     accept: () => {
       entriesStore.resetStore()
       timerStore.resetStore()
+      toast.add({ severity: 'success', summary: 'Tournament Restarted', detail: `Tournament state successfully restarted`, life: 5000 });
     }
   });
 }
