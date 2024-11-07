@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import {useLocalStorage} from "@vueuse/core";
-import {computed, ref, watch} from "vue";
+import {computed, watch} from "vue";
 import {camelcaseToHyphenSeparated} from "@/util/formatUtils.js";
 import newLevelSoundFile from "@/assets/sounds/nuevo_cambio_de_nivel.wav";
 
@@ -8,6 +8,7 @@ const defaultNewLevelAudio = new Audio(newLevelSoundFile);
 
 export const useCustomizationStore = defineStore('customizationStore', () => {
 
+    const noSoundFileName = `No Sound`;
 
     const defaultSoundFileName = 'defaultNewLevel.mp3';
 
@@ -15,6 +16,9 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
     const newLevelFileName = useLocalStorage('vue-poker-timer-new-level-file-name', defaultSoundFileName)
 
     const newLevelAudio = computed(() => {
+        if(noSoundFileName === newLevelFileName.value) {
+            return null
+        }
         try {
             return newLevelSoundBase64.value ? new Audio(newLevelSoundBase64.value) : defaultNewLevelAudio
         } catch (e) {
@@ -97,6 +101,10 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
         reader.readAsDataURL(file);
     }
 
+    function clearNewLevelSound() {
+        newLevelSoundBase64.value = null
+        newLevelFileName.value = noSoundFileName
+    }
 
 
     function updateVariable(variable, color) {
@@ -114,17 +122,12 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
         newLevelFileName.value = defaultSoundFileName
     }
 
-    watch(newLevelSoundBase64, (value) => {
-        if(!value) {
-            newLevelFileName.value = defaultSoundFileName
-        }
-    })
-
     return {
         paletteColors,
         newLevelAudio,
         newLevelFileName,
         setNewLevelSound,
+        clearNewLevelSound,
         resetStore
     }
 })

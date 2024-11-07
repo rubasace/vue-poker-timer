@@ -7,7 +7,7 @@ defineProps<{
 
 </script>
 <template>
-  <Card style="width: 13em" >
+  <Card style="width: 100%" >
     <template #title>
       <div class="value">
         {{ value }}

@@ -140,7 +140,6 @@ const currencies = [
   display: flex
   flex-direction: column
   margin-top: 1em
-
 .section-title
   width: 100%
   margin-top: 1em
@@ -150,7 +149,7 @@ const currencies = [
 .structure
   margin-top: 2em
 
-@media (max-width: 1080px)
+@media (max-width: 680px)
   .p-field
     width: 100%
 </style>

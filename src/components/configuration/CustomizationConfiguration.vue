@@ -39,9 +39,11 @@ function resetCustomization() {
 
 <template>
 
+  <div class="section-title">Colors</div>
+
   <div class="form-container flex flex-wrap gap-2">
     <div v-for="(color, key) in customizationStore.paletteColors" :key="key" class="p-field">
-      <label class="label" :for="`${key}Color`">{{ key.charAt(0).toUpperCase() + key.slice(1) }} Color</label>
+      <label class="label" :for="`${key}Color`">{{ key.charAt(0).toUpperCase() + key.slice(1) }}</label>
       <input type="color" class="color-picker"
              :id="`${key}Color`"
              v-model="customizationStore.paletteColors[key]"
@@ -65,6 +67,7 @@ function resetCustomization() {
 
     <label class="label">New Level</label>
     <span class="file-name">{{ customizationStore.newLevelFileName }}</span>
+    <Button icon="pi pi-trash" severity="secondary" @click="customizationStore.clearNewLevelSound()" class="action delete" raised/>
     <Button label="Upload" icon="pi pi-upload" severity="primary" @click="openFilePicker" class="action" raised/>
 
   </div>
@@ -77,7 +80,7 @@ function resetCustomization() {
 
 <style scoped lang="sass">
 .label
-  width: 13em
+  width: 9em
 
 .p-field
   width: 32%
@@ -127,6 +130,9 @@ function resetCustomization() {
 
   .action
     font-size: 0.95em
+    margin-right: 0.6em
+    &.delete
+      color: #e20f0f
 
 
 .section-title
@@ -142,7 +148,11 @@ function resetCustomization() {
   text-align: center
   margin-top: 3em
 
-@media (max-width: 1080px)
+@media (max-width: 800px)
+  .p-field
+    width: 48%
+
+@media (max-width: 550px)
   .p-field
     width: 100%
 </style>

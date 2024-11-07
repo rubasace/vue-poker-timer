@@ -1,6 +1,6 @@
 <script setup>
 
-import EntriesConfiguration from "@/components/configuration/EntriesConfiguration.vue";
+import LiveActionsConfiguration from "@/components/configuration/LiveActionsConfiguration.vue";
 import TournamentDetailsConfiguration from "@/components/configuration/TournamentDetailsConfiguration.vue";
 import ImportConfiguration from "@/components/configuration/ImportConfiguration.vue";
 import CustomizationConfiguration from "@/components/configuration/CustomizationConfiguration.vue";
@@ -19,7 +19,7 @@ import CustomizationConfiguration from "@/components/configuration/Customization
           <TournamentDetailsConfiguration/>
         </TabPanel>
         <TabPanel value="1">
-          <EntriesConfiguration/>
+          <LiveActionsConfiguration/>
         </TabPanel>
         <TabPanel value="2">
           <CustomizationConfiguration/>

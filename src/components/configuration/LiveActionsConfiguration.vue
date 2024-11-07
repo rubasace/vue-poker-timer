@@ -95,6 +95,7 @@ const remainingPlayers = computed(() => {
       display: flex
       justify-content: center
       align-content: center
+      padding: 1em
 
   .details
     justify-content: space-around
@@ -121,7 +122,7 @@ const remainingPlayers = computed(() => {
   .settings-form
     .details
       .section-item
-        width: 45%
+        width: 100%
 
         ::v-deep(.p-card)
           font-size: 0.8em

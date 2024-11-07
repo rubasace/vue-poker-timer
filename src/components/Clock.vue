@@ -23,6 +23,9 @@ const levelTimer = computed(() => {
 })
 
 function playSound(audio) {
+  if(!audio){
+    return
+  }
   audio.play()
   setTimeout(() => {
     audio.pause();
