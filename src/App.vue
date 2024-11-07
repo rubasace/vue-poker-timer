@@ -16,14 +16,15 @@ import {useIdleMouse} from "@/composables/useIdleMouse.js";
 
 const confirm = useConfirm();
 const {idleMouse} = useIdleMouse()
-useKeyboardShortcuts()
+const showDialog = ref(false);
+
+useKeyboardShortcuts({paused: showDialog})
 
 
 const entriesStore = useEntriesStore();
 const timerStore = useTimerStore();
 const tournamentInfoStore = useTournamentInfoStore();
 
-const showDialog = ref(false);
 
 //TODO show minutes of next level
 

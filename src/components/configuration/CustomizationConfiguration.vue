@@ -1,12 +1,24 @@
 <script setup xmlns="http://www.w3.org/1999/html">
 import {useCustomizationStore} from "@/stores/customizationStore.js";
 import {useConfirm} from "primevue/useconfirm";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 
 const confirm = useConfirm()
 const customizationStore = useCustomizationStore()
 
 const fileInput = ref(null);
+
+const categorizedColors = computed(() => {
+  const categories = {};
+  for (const [key, color] of Object.entries(customizationStore.paletteColors)) {
+    const category = customizationStore.getCategory(key);
+    if (!categories[category]) {
+      categories[category] = {};
+    }
+    categories[category][key] = color;
+  }
+  return categories;
+});
 
 function openFilePicker() {
   fileInput.value.choose()
@@ -33,22 +45,49 @@ function resetCustomization() {
       customizationStore.resetStore()
     }
   })
+
 }
+
+const backgroundTypes = ref([
+  {name: 'Solid Color', value: 'solid'},
+  {name: 'Gradient', value: 'gradient'},
+  {name: 'Custom CSS', value: 'custom'}
+]);
 
 </script>
 
 <template>
 
-  <div class="section-title">Colors</div>
-
-  <div class="form-container flex flex-wrap gap-2">
-    <div v-for="(color, key) in customizationStore.paletteColors" :key="key" class="p-field">
-      <label class="label" :for="`${key}Color`">{{ key.charAt(0).toUpperCase() + key.slice(1) }}</label>
-      <input type="color" class="color-picker"
-             :id="`${key}Color`"
-             v-model="customizationStore.paletteColors[key]"
-      />
+  <div v-for="(colors, category) in categorizedColors" :key="category">
+    <div class="section-title">{{ category }} Colors</div>
+    <div class="form-container flex flex-wrap gap-2">
+      <div v-for="(color, key) in colors" :key="key" class="p-field">
+        <label class="label" :for="`${key}Color`">{{ key.charAt(0).toUpperCase() + key.slice(1) }}</label>
+        <input type="color" class="color-picker"
+               :id="`${key}Color`"
+               v-model="customizationStore.paletteColors[key]"
+        />
+      </div>
     </div>
+  </div>
+
+  <div class="section-title">Background</div>
+
+  <div class="p-field">
+    <label class="label" for="background-type">Type</label>
+    <Select v-model="customizationStore.backgroundSetting.type" id="background-type" :options="backgroundTypes" optionLabel="name" optionValue="value"/>
+  </div>
+
+  <div class="p-field row">
+    <label class="label" for="background-type">Value</label>
+    <input type="color" class="color-picker"
+           v-model="customizationStore.backgroundSetting.color"
+           v-if="customizationStore.backgroundSetting.type === 'solid'"
+    />
+    <InputText v-model="customizationStore.backgroundSetting.gradient" id="tournamentSeries" style="width: 90%" v-if="customizationStore.backgroundSetting.type === 'gradient'"/>
+
+    <Textarea v-model="customizationStore.backgroundSetting.customCSS" rows="7" cols="43" placeholder="Enter custom CSS for background"
+              v-if="customizationStore.backgroundSetting.type === 'custom'"/>
   </div>
 
   <div class="section-title">Sounds</div>
@@ -80,7 +119,7 @@ function resetCustomization() {
 
 <style scoped lang="sass">
 .label
-  width: 9em
+  width: 120px
 
 .p-field
   width: 32%
@@ -89,29 +128,30 @@ function resetCustomization() {
   align-items: center
   justify-content: start
   margin-top: 1em
+  &.row
+    width: 100%
 
-  .color-picker
-    $size: 1.8em
-    width: $size
-    height: $size
-    margin: 0
+.color-picker
+  $size: 1.8em
+  width: $size
+  height: $size
+  margin: 0
+  padding: 0
+  -webkit-appearance: none
+  -moz-appearance: none
+  appearance: none
+  background-color: transparent
+  border: none
+  cursor: pointer
+
+  &::-webkit-color-swatch-wrapper
     padding: 0
-    -webkit-appearance: none
-    -moz-appearance: none
-    appearance: none
-    background-color: transparent
+    border-radius: 15px
     border: none
-    cursor: pointer
 
-    &::-webkit-color-swatch-wrapper
-      padding: 0
-      border-radius: 15px
-      border: none
-
-    &::-moz-color-swatch
-      border-radius: 15px
-      border: 3px solid #000
-
+  &::-moz-color-swatch
+    border-radius: 15px
+    border: 3px solid #000
 
 
 .audio-field
@@ -121,6 +161,7 @@ function resetCustomization() {
   align-items: center
   justify-content: start
   margin-top: 1em
+
   .file-name
     width: 13em
     overflow: hidden
@@ -131,6 +172,7 @@ function resetCustomization() {
   .action
     font-size: 0.95em
     margin-right: 0.6em
+
     &.delete
       color: #e20f0f
 
@@ -140,7 +182,7 @@ function resetCustomization() {
   margin-top: 1em
   font-weight: bold
   font-size: 1.2em
-
+  text-transform: capitalize
 
 
 .danger

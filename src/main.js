@@ -7,6 +7,7 @@ import {createApp} from 'vue'
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
 import {createPinia} from 'pinia'
+import piniaPersistedState from 'pinia-plugin-persistedstate';
 import App from './App.vue'
 
 
@@ -26,6 +27,7 @@ import Checkbox from 'primevue/checkbox';
 import Card from 'primevue/card';
 import ConfirmDialog from 'primevue/confirmdialog';
 import FileUpload from 'primevue/fileupload';
+import Textarea from 'primevue/textarea';
 
 
 import ConfirmationService from 'primevue/confirmationservice';
@@ -49,6 +51,7 @@ app.component('Checkbox', Checkbox);
 app.component('Card', Card);
 app.component('ConfirmDialog', ConfirmDialog);
 app.component('FileUpload', FileUpload);
+app.component('Textarea', Textarea);
 
 app.use(PrimeVue, {
     theme: {
@@ -62,7 +65,9 @@ app.use(PrimeVue, {
 
 
 app.use(ConfirmationService);
-app.use(createPinia())
+const pinia = createPinia()
+pinia.use(piniaPersistedState);
+app.use(pinia)
 
 //Done like this so themes get loaded at startup
 const customizationStore = useCustomizationStore()

@@ -1,8 +1,9 @@
 import {onKeyStroke} from "@vueuse/core";
 import {useTimerStore} from "@/stores/timerStore.js";
 import {useEntriesStore} from "@/stores/entriesStore.js";
+import {ref} from "vue";
 
-export function useKeyboardShortcuts() {
+export function useKeyboardShortcuts({paused = ref(false)} = {}) {
 
     const timerStore = useTimerStore()
     const entriesStore = useEntriesStore()
@@ -13,8 +14,8 @@ export function useKeyboardShortcuts() {
         incrementLevel: 'ArrowRight',
         reduceMinute: 'ArrowDown',
         addMinute: 'ArrowUp',
-        registerPlayer: 'p',
-        unregisterPlayer: 'o',
+        // registerPlayer: 'p',
+        // unregisterPlayer: 'o',
         // eliminatePlayer: 'k',
         // undoElimination: 'l',
         // addReentry: 'q',
@@ -49,7 +50,9 @@ export function useKeyboardShortcuts() {
             continue
         }
         onKeyStroke(shortcuts[action], (e) => {
-            e.preventDefault()
+            if(paused.value) {
+                return
+            }
             possibleActions[action]()
         })
     }
