@@ -2,8 +2,10 @@
 import { ref } from 'vue';
 import {useCustomizationStore} from "@/stores/customizationStore.js";
 import {useToast} from "primevue/usetoast";
+import {useConfirm} from "primevue/useconfirm";
 
 const toast = useToast();
+const confirm = useConfirm();
 const customizationStore = useCustomizationStore();
 
 const props = defineProps({
@@ -27,16 +29,7 @@ const openFilePicker = () => {
   fileInput.value.choose();
 };
 
-function uploadNewLevelSound(event) {
-  const file = event.files[0];
-  if (file) {
-    customizationStore.setNewLevelSound(file)
-    toast.add({ severity: 'success', summary: 'File Uploaded', detail: `Audio file ${file.name} uploaded successfully`, life: 5000 });
-
-  }
-}
-
-function clearNewLevelSound() {
+function clearSound() {
   confirm.require({
     message: 'Do you want to remove the audio file? You will need to upload it again or reset to the default one if you want to undo the changes',
     header: 'Confirmation',
@@ -48,7 +41,7 @@ function clearNewLevelSound() {
     },
     accept: () => {
       const fileName = customizationStore.newLevelFileName
-      customizationStore.clearNewLevelSound()
+      props.clearFile()
       toast.add({ severity: 'success', summary: 'File removed', detail: `File ${fileName} removed successfully`, life: 5000 });
     }
   })
@@ -73,7 +66,7 @@ function clearNewLevelSound() {
     <Button
         icon="pi pi-trash"
         severity="secondary"
-        @click="clearFile()"
+        @click="clearSound"
         class="action delete"
         raised
         v-visible="customizationStore.isSoundFile(fileName)"
