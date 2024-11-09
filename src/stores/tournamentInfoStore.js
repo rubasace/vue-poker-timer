@@ -1,13 +1,13 @@
-import { defineStore } from 'pinia';
-import { computed, watch } from 'vue';
-import { useLocalStorage } from '@vueuse/core';
-import { useTimerStore } from "@/stores/timerStore.js";
+import {defineStore} from 'pinia';
+import {computed, watch} from 'vue';
+import {useLocalStorage} from '@vueuse/core';
+import {useTimerStore} from "@/stores/timerStore.js";
 
 export const useTournamentInfoStore = defineStore('tournamentInfoStore', () => {
     // State
     const tournamentSeries = useLocalStorage('vue-poker-timer-tournament-series', 'Marcosfa Poker Tour');
     const tournamentName = useLocalStorage('vue-poker-timer-tournament-name', '#2');
-    const currency = useLocalStorage('vue-poker-timer-currency', { name: 'Euro', code: 'EUR', symbol: '€' });
+    const currency = useLocalStorage('vue-poker-timer-currency', {name: 'Euro', code: 'EUR', symbol: '€'});
     const entryFee = useLocalStorage('vue-poker-timer-entry-fee', 0);
     const entryRake = useLocalStorage('vue-poker-timer-entry-rake', 0);
     const initialStack = useLocalStorage('vue-poker-timer-initial-stack', 25000);
@@ -24,15 +24,15 @@ export const useTournamentInfoStore = defineStore('tournamentInfoStore', () => {
     const guaranteedPrize = useLocalStorage('vue-poker-timer-guaranteed-prize', 20);
     const estimatedDurationHours = useLocalStorage('vue-poker-timer-estimated-duration', 8);
     const levels = useLocalStorage('vue-poker-timer-levels', [
-        { id: Date.now(), smallBlind: 100, bigBlind: 100, ante: 100, minutes: 20 },
-        { id: Date.now(), smallBlind: 100, bigBlind: 200, ante: 200, minutes: 20 },
-        { id: Date.now(), smallBlind: 100, bigBlind: 300, ante: 300, minutes: 20 },
-        { id: Date.now(), smallBlind: 200, bigBlind: 400, ante: 400, minutes: 20 },
-        { id: Date.now(), smallBlind: 200, bigBlind: 500, ante: 500, minutes: 20 },
-        { id: Date.now(), smallBlind: 300, bigBlind: 600, ante: 600, minutes: 20 },
-        { id: Date.now(), break: true, minutes: 20 },
-        { id: Date.now(), smallBlind: 400, bigBlind: 800, ante: 800, minutes: 20 },
-        { id: Date.now(), smallBlind: 500, bigBlind: 1000, ante: 1000, minutes: 20 },
+        {id: Date.now(), smallBlind: 100, bigBlind: 100, ante: 100, minutes: 20},
+        {id: Date.now(), smallBlind: 100, bigBlind: 200, ante: 200, minutes: 20},
+        {id: Date.now(), smallBlind: 100, bigBlind: 300, ante: 300, minutes: 20},
+        {id: Date.now(), smallBlind: 200, bigBlind: 400, ante: 400, minutes: 20},
+        {id: Date.now(), smallBlind: 200, bigBlind: 500, ante: 500, minutes: 20},
+        {id: Date.now(), smallBlind: 300, bigBlind: 600, ante: 600, minutes: 20},
+        {id: Date.now(), break: true, minutes: 20},
+        {id: Date.now(), smallBlind: 400, bigBlind: 800, ante: 800, minutes: 20},
+        {id: Date.now(), smallBlind: 500, bigBlind: 1000, ante: 1000, minutes: 20},
     ]);
 
     // Timer store
@@ -46,9 +46,11 @@ export const useTournamentInfoStore = defineStore('tournamentInfoStore', () => {
     }, {immediate: true});
 
     // Getters
+    const next = computed(() => levels.value[timerStore.levelIndex + 1]);
+
     const currentLevel = computed(() => levels.value[timerStore.levelIndex]);
-    const currentLevelNumber = computed(()=> {
-        if(levels.value[timerStore.levelIndex]?.break){
+    const currentLevelNumber = computed(() => {
+        if (levels.value[timerStore.levelIndex]?.break) {
             return null
         }
         return levels.value.slice(0, timerStore.levelIndex + 1)
@@ -121,6 +123,7 @@ export const useTournamentInfoStore = defineStore('tournamentInfoStore', () => {
         levels,
 
         // Getters
+        next,
         currentLevel,
         currentLevelNumber,
         nextLevel,

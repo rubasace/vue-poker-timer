@@ -4,10 +4,12 @@ import {computed, watch} from "vue";
 import {useTimerStore} from "@/stores/timerStore.js";
 import {useLeaderStore} from "@/stores/leaderStore.js";
 import {useCustomizationStore} from "@/stores/customizationStore.js";
+import {useTournamentInfoStore} from "@/stores/tournamentInfoStore.js";
 
 const timerStore = useTimerStore();
 const leaderStore = useLeaderStore()
 const customizationStore = useCustomizationStore()
+const tournamentInfoStore = useTournamentInfoStore()
 
 
 const toggleIcon = computed(() => {
@@ -23,7 +25,7 @@ const levelTimer = computed(() => {
 })
 
 function playSound(audio) {
-  if(!audio){
+  if (!audio) {
     return
   }
   audio.play()
@@ -34,8 +36,18 @@ function playSound(audio) {
 }
 
 watch(levelTimer, (newVal) => {
-  if (newVal === 1 && leaderStore.isLeaderTab) {
-    playSound(customizationStore.newLevelAudio);
+  if (!leaderStore.isLeaderTab) {
+    return
+  }
+  if (newVal === 0) {
+    if (tournamentInfoStore.currentLevel.break || tournamentInfoStore.next?.break) {
+      playSound(customizationStore.newBreakAudio);
+    } else {
+      playSound(customizationStore.newLevelAudio);
+    }
+  }
+  if (newVal === 60) {
+    playSound(customizationStore.oneMinuteAudio);
   }
 })
 

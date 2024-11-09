@@ -2,20 +2,32 @@ import {defineStore} from 'pinia';
 import {useLocalStorage} from "@vueuse/core";
 import {computed, watch} from "vue";
 import {camelcaseToHyphenSeparated} from "@/util/formatUtils.js";
-import newLevelSoundFile from "@/assets/sounds/nuevo_cambio_de_nivel.wav";
+import newLevelSoundFile from "@/assets/sounds/defaultNewLevel.wav";
+import newBreakSoundFile from "@/assets/sounds/defaultNewBreak.mp3";
 
-const defaultNewLevelAudio = new Audio(newLevelSoundFile);
 
 export const useCustomizationStore = defineStore('customizationStore', () => {
-        const customBackgroundStyle = "custom-background-style";
-        const noSoundFileName = `No Sound`;
-        const defaultSoundFileName = 'defaultNewLevel.mp3';
 
+
+        const noSoundFileName = `No Sound`;
+
+        const defaultNewLevelFileName = 'defaultNewLevel.mp3';
+        const defaultNewLevelAudio = new Audio(newLevelSoundFile);
         const newLevelSoundBase64 = useLocalStorage('vue-poker-timer-new-level-sound', null);
-        const newLevelFileName = useLocalStorage('vue-poker-timer-new-level-file-name', defaultSoundFileName);
+        const newLevelFileName = useLocalStorage('vue-poker-timer-new-level-file-name', defaultNewLevelFileName);
+
+        const defaultNewBreakFileName = 'defaultNewBreak.mp3';
+        const defaultNewBreakAudio = new Audio(newBreakSoundFile);
+        const newBreakSoundBase64 = useLocalStorage('vue-poker-timer-new-break-sound', null);
+        const newBreakFileName = useLocalStorage('vue-poker-timer-new-break-file-name', defaultNewBreakFileName);
+
+        const defaultOneMinuteAudio = null;
+        const defaultOneMinuteFileName = noSoundFileName;
+        const oneMinuteSoundBase64 = useLocalStorage('vue-poker-timer-one-minute-sound', null);
+        const oneMinuteFileName = useLocalStorage('vue-poker-timer-one-minute-file-name', defaultOneMinuteFileName);
 
         const newLevelAudio = computed(() => {
-            if (!isNewLevelSound()) {
+            if (!isSoundFile(newLevelFileName.value)) {
                 return null;
             }
             try {
@@ -25,6 +37,29 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
             }
         });
 
+        const newBreakAudio = computed(() => {
+            if (!isSoundFile(newBreakFileName.value)) {
+                return null;
+            }
+            try {
+                return newBreakSoundBase64.value ? new Audio(newBreakSoundBase64.value) : defaultNewBreakAudio;
+            } catch (e) {
+                return defaultNewBreakAudio;
+            }
+        });
+
+        const oneMinuteAudio = computed(() => {
+            if (!isSoundFile(oneMinuteFileName.value)) {
+                return null;
+            }
+            try {
+                return oneMinuteAudio.value ? new Audio(newBreakSoundBase64.value) : defaultNewBreakAudio;
+            } catch (e) {
+                return defaultNewBreakAudio;
+            }
+        });
+
+        const customBackgroundStyle = "custom-background-style";
         function defaultBackgroundSetting() {
             return {
                 type: 'gradient',
@@ -110,8 +145,8 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
             return colorPalette[colorName].category;
         }
 
-        function isNewLevelSound(){
-            return  noSoundFileName !== newLevelFileName.value;
+        function isSoundFile(filename) {
+            return noSoundFileName !== filename;
         }
 
         function setNewLevelSound(file) {
@@ -123,9 +158,37 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
             reader.readAsDataURL(file);
         }
 
+        function setNewBreakSound(file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                newLevelSoundBase64.value = event.target.result;
+                newLevelFileName.value = file.name;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function setOneMinuteSound(file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                oneMinuteSoundBase64.value = event.target.result;
+                oneMinuteFileName.value = file.name;
+            };
+            reader.readAsDataURL(file);
+        }
+
         function clearNewLevelSound() {
             newLevelSoundBase64.value = null;
             newLevelFileName.value = noSoundFileName;
+        }
+
+        function clearNewBreakSound() {
+            newBreakSoundBase64.value = null;
+            newBreakFileName.value = noSoundFileName;
+        }
+
+        function clearOneMinuteSound() {
+            oneMinuteSoundBase64.value = null;
+            oneMinuteFileName.value = noSoundFileName;
         }
 
         function updateVariable(variable, color) {
@@ -140,18 +203,30 @@ export const useCustomizationStore = defineStore('customizationStore', () => {
                 colorRef.value = colorPalette[key].default;
             }
             newLevelSoundBase64.value = null;
-            newLevelFileName.value = defaultSoundFileName;
+            newLevelFileName.value = defaultNewLevelFileName;
+            newBreakSoundBase64.value = null;
+            newBreakFileName.value = defaultNewBreakFileName;
+            oneMinuteSoundBase64.value = null;
+            oneMinuteFileName.value = defaultOneMinuteFileName;
             backgroundSetting.value = defaultBackgroundSetting();
         }
 
         return {
             paletteColors,
             newLevelAudio,
+            newBreakAudio,
+            oneMinuteAudio,
             newLevelFileName,
+            newBreakFileName,
+            oneMinuteFileName,
             backgroundSetting,
-            isNewLevelSound,
+            isSoundFile,
             setNewLevelSound,
+            setNewBreakSound,
+            setOneMinuteSound,
             clearNewLevelSound,
+            clearNewBreakSound,
+            clearOneMinuteSound,
             getCategory,
             resetStore
         };

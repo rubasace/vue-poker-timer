@@ -2,14 +2,13 @@
 import {useCustomizationStore} from "@/stores/customizationStore.js";
 import {useConfirm} from "primevue/useconfirm";
 import {computed, ref} from "vue";
-import { useToast } from 'primevue/usetoast';
+import {useToast} from 'primevue/usetoast';
+import AudioFileCustomizer from "@/components/configuration/AudioFileCustomizer.vue";
 
 const confirm = useConfirm()
 const customizationStore = useCustomizationStore()
 
 const toast = useToast();
-
-const fileInput = ref(null);
 
 const categorizedColors = computed(() => {
   const categories = {};
@@ -23,19 +22,6 @@ const categorizedColors = computed(() => {
   return categories;
 });
 
-function openFilePicker() {
-  fileInput.value.choose()
-}
-
-function uploadNewLevelSound(event) {
-  const file = event.files[0];
-  if (file) {
-    customizationStore.setNewLevelSound(file)
-    toast.add({ severity: 'success', summary: 'File Uploaded', detail: `Audio file ${file.name} uploaded successfully`, life: 5000 });
-
-  }
-}
-
 function resetCustomization() {
   confirm.require({
     message: 'Do you want to load the original customization? Your changes will be lost',
@@ -48,28 +34,11 @@ function resetCustomization() {
     },
     accept: () => {
       customizationStore.resetStore()
-      toast.add({ severity: 'success', summary: 'Customizations Reset', detail: `All customizations have been reset to their default values`, life: 5000 });
+      toast.add({severity: 'success', summary: 'Customizations Reset', detail: `All customizations have been reset to their default values`, life: 5000});
     }
   })
 }
 
-function clearNewLevelSound() {
-  confirm.require({
-    message: 'Do you want to remove the audio file? You will need to upload it again or reset to the default one if you want to undo the changes',
-    header: 'Confirmation',
-    icon: 'pi pi-exclamation-triangle',
-    rejectProps: {
-      label: 'Cancel',
-      severity: 'secondary',
-      outlined: true
-    },
-    accept: () => {
-      const fileName = customizationStore.newLevelFileName
-      customizationStore.clearNewLevelSound()
-      toast.add({ severity: 'success', summary: 'File removed', detail: `File ${fileName} removed successfully`, life: 5000 });
-    }
-  })
-}
 
 const backgroundTypes = ref([
   {name: 'Solid Color', value: 'solid'},
@@ -115,27 +84,21 @@ const backgroundTypes = ref([
 
   <div class="section-title">Sounds</div>
 
-  <div class="audio-field">
-    <FileUpload
-        ref="fileInput"
-        mode="basic"
-        @select="uploadNewLevelSound"
-        customUpload
-        auto
-        accept="audio/*"
-        style="display: none"
-        :maxFileSize="1000000"
-    />
+  <AudioFileCustomizer label="New Level" :file-name="customizationStore.newLevelFileName"
+                       :clear-file="customizationStore.clearNewLevelSound"
+                       :upload-file="customizationStore.setNewLevelSound"/>
 
-    <label class="label">New Level</label>
-    <span class="file-name">{{ customizationStore.newLevelFileName }}</span>
-    <Button icon="pi pi-trash" severity="secondary" @click="clearNewLevelSound()" class="action delete" raised v-visible="customizationStore.isNewLevelSound()"/>
-    <Button label="Upload" icon="pi pi-upload" severity="primary" @click="openFilePicker" class="action" raised/>
+  <AudioFileCustomizer label="New Break" :file-name="customizationStore.newBreakFileName"
+                       :clear-file="customizationStore.clearNewBreakSound"
+                       :upload-file="customizationStore.setNewBreakSound"/>
 
-  </div>
+  <AudioFileCustomizer label="One Minute Left" :file-name="customizationStore.oneMinuteFileName"
+                       :clear-file="customizationStore.clearOneMinuteSound"
+                       :upload-file="customizationStore.setOneMinuteSound"/>
 
-  <div class="danger section">
-    <Button label="Reset Customization" icon="pi pi-history" @click="resetCustomization()" severity="danger"/>
+  <div class=" danger section
+  ">
+  <Button label="Reset Customization" icon="pi pi-history" @click="resetCustomization()" severity="danger"/>
   </div>
 
 </template>
@@ -151,6 +114,7 @@ const backgroundTypes = ref([
   align-items: center
   justify-content: start
   margin-top: 1em
+
   &.row
     width: 100%
 
@@ -175,29 +139,6 @@ const backgroundTypes = ref([
   &::-moz-color-swatch
     border-radius: 15px
     border: 3px solid #000
-
-
-.audio-field
-  width: 100%
-  display: flex
-  flex-direction: row
-  align-items: center
-  justify-content: start
-  margin-top: 1em
-
-  .file-name
-    width: 13em
-    overflow: hidden
-    white-space: nowrap
-    text-overflow: ellipsis
-    margin-right: 1em
-
-  .action
-    font-size: 0.95em
-    margin-right: 0.6em
-
-    &.delete
-      color: #e20f0f
 
 
 .section-title
